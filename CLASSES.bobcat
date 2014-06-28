@@ -1,7 +1,14 @@
+a2x
 align
+datetime
+exception
 fswap
+gs
 mbuf
 mstream
+stat
+string
 table
 tablebase
 tablesupport
+user
