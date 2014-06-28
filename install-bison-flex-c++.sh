@@ -10,7 +10,7 @@ cd icmake/icmake
 cd ../..
 
 cd bobcat/bobcat
-echo 'n\nn\n' | ./build libraries strip
+echo "\n\n\n\n" | ./build libraries strip
 ./build install
 cd ../..
 
