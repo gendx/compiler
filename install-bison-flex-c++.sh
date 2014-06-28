@@ -6,7 +6,7 @@ git clone http://git.code.sf.net/p/bisoncpp/code bisoncpp/
 
 cd icmake/icmake
 ./icm_bootstrap /
-./install strip progs
+./icm_install strip progs
 cd ../..
 
 cd bobcat/bobcat
