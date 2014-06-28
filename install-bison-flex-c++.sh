@@ -24,6 +24,7 @@ cd ../..
 cd bisoncpp/bisonc++
 ./build program strip
 ./build install program
+./build install skel
 cd ../..
 
 rm -Rf icmake bobcat flexcpp bisoncpp
