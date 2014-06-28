@@ -13,6 +13,7 @@ install:
   - cd install
   - chmod +x ./install-bison-flex-c++.sh
   - sudo ./install-bison-flex-c++.sh
+  - cd ..
   
 script:
   - cd src/parse
