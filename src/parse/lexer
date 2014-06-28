@@ -1,6 +1,6 @@
 %x COMMENT
-%x STRING
 %x CHAR
+%x STRING
 
 %%
 
@@ -80,26 +80,6 @@ forever {
 }
 
 
-// ******************** String ********************
-\" {
-    more();
-    begin(StartCondition__::STRING);
-}
-<STRING> {
-    \" {
-        begin(StartCondition__::INITIAL);
-        return Parser::STRING;
-    }
-    
-    \\.|. {
-        more();
-    }
-    
-    \n {
-        return Parser::ERR_STRING;
-    }
-}
-
 // ******************** Char ********************
 \' {
     more();
@@ -117,6 +97,26 @@ forever {
     
     \n {
         return Parser::ERR_CHAR;
+    }
+}
+
+// ******************** String ********************
+\" {
+    more();
+    begin(StartCondition__::STRING);
+}
+<STRING> {
+    \" {
+        begin(StartCondition__::INITIAL);
+        return Parser::STRING;
+    }
+    
+    \\.|. {
+        more();
+    }
+    
+    \n {
+        return Parser::ERR_STRING;
     }
 }
 

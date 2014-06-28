@@ -4,7 +4,7 @@
 %stype std::string
 
 // lowest precedence first, highest precedence last
-%token IDENTIFIER NUMBER CHAR STRING QUOTE EOL INDENT DEDENT ERR_STRING ERR_QUOTE ERR_INDENT
+%token IDENTIFIER NUMBER CHAR STRING EOL INDENT DEDENT ERR_CHAR ERR_STRING ERR_INDENT UNKNOWN_CHAR
 %token FOREVER
 %token LEFT_PAR RIGHT_PAR
 %right OP_ASSIGN
@@ -107,16 +107,16 @@ data:
         std::cout << "num (" << d_scanner.matched().size() << ") : " << d_scanner.matched() << std::endl;
     }
 |
+    CHAR
+    {
+        $$ = d_scanner.matched();
+        std::cout << "char (" << d_scanner.matched().size() << ") : " << d_scanner.matched() << std::endl;
+    }
+|
     STRING
     {
         $$ = d_scanner.matched();
         std::cout << "str (" << d_scanner.matched().size() << ") : " << d_scanner.matched() << std::endl;
-    }
-|
-    QUOTE
-    {
-        $$ = d_scanner.matched();
-        std::cout << "quote (" << d_scanner.matched().size() << ") : " << d_scanner.matched() << std::endl;
     }
 ;
 
