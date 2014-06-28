@@ -14,6 +14,8 @@ install:
   - sudo ./install-bison-flex-c++.sh
   
 script:
-  - flexc++ parse/lexer
-  - bisonc++ parse/grammar
+  - cd parse
+  - flexc++ lexer
+  - bisonc++ grammar
+  - cd ..
   - ls -lR
