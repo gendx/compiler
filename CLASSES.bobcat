@@ -5,10 +5,12 @@ datetime
 exception
 fswap
 gs
+indent
 iuo
 linearmap
 mbuf
 mstream
+ranger
 stat
 string
 table
