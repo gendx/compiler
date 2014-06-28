@@ -1,9 +1,12 @@
 a2x
 align
+arg
 datetime
 exception
 fswap
 gs
+iuo
+linearmap
 mbuf
 mstream
 stat
