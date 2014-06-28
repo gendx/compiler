@@ -1,0 +1,122 @@
+%scanner                Scanner.h
+%scanner-token-function d_scanner.lex()
+
+%stype std::string
+
+// lowest precedence first, highest precedence last
+%token IDENTIFIER NUMBER CHAR STRING QUOTE EOL INDENT DEDENT ERR_STRING ERR_QUOTE ERR_INDENT
+%token FOREVER
+%token LEFT_PAR RIGHT_PAR
+%right OP_ASSIGN
+%left COND_OR
+%left COND_AND
+%left OP_COMPARE
+%left OR
+%left XOR
+%left AND
+%left OP_SHIFT
+%left OP_TERM
+%left OP_FACTOR
+%right OP_UNARY
+%right POW
+
+%%
+
+startrule:
+    stmts
+;
+
+stmts:
+    stmts stmt
+|
+    stmt
+;
+
+stmt:
+    EOL
+|   expr EOL
+    {
+        std::cout << "expr: " << $1 << std::endl;
+    }
+|   FOREVER INDENT stmt DEDENT {
+    $$ = "forever(" + $3 + ")";
+    }
+;
+
+expr:
+    data {
+    $$ = $1;
+    }
+|   LEFT_PAR expr RIGHT_PAR {
+    $$ = $1 + $2 + $3;
+    }
+|   expr OP_ASSIGN expr {
+    $$ = "(" + $1 + $2 + $3 + ")";
+    }
+|   expr COND_OR expr {
+    $$ = "(" + $1 + $2 + $3 + ")";
+    }
+|   expr COND_AND expr {
+    $$ = "(" + $1 + $2 + $3 + ")";
+    }
+|   expr OP_COMPARE expr {
+    $$ = "(" + $1 + $2 + $3 + ")";
+    }
+|   expr OR expr {
+    $$ = "(" + $1 + $2 + $3 + ")";
+    }
+|   expr XOR expr {
+    $$ = "(" + $1 + $2 + $3 + ")";
+    }
+|   expr AND expr {
+    $$ = "(" + $1 + $2 + $3 + ")";
+    }
+|   expr OP_SHIFT expr {
+    $$ = "(" + $1 + $2 + $3 + ")";
+    }
+|   expr OP_TERM expr {
+    $$ = "(" + $1 + $2 + $3 + ")";
+    }
+|   expr OP_FACTOR expr {
+    $$ = "(" + $1 + $2 + $3 + ")";
+    }
+|   expr OP_UNARY expr {
+    $$ = "(" + $1 + $2 + $3 + ")";
+    }
+|   expr POW expr {
+    $$ = "(" + $1 + $2 + $3 + ")";
+    }
+|   OP_UNARY expr {
+    $$ = "(" + $1 + $2 + ")";
+    }
+|   OP_TERM expr %prec OP_UNARY {
+    $$ = "(" + $1 + $2 + ")";
+    }
+;
+
+data:
+    IDENTIFIER
+    {
+        $$ = d_scanner.matched();
+        std::cout << "ident (" << d_scanner.matched().size() << ") : " << d_scanner.matched() << std::endl;
+    }
+|
+    NUMBER
+    {
+        $$ = d_scanner.matched();
+        std::cout << "num (" << d_scanner.matched().size() << ") : " << d_scanner.matched() << std::endl;
+    }
+|
+    STRING
+    {
+        $$ = d_scanner.matched();
+        std::cout << "str (" << d_scanner.matched().size() << ") : " << d_scanner.matched() << std::endl;
+    }
+|
+    QUOTE
+    {
+        $$ = d_scanner.matched();
+        std::cout << "quote (" << d_scanner.matched().size() << ") : " << d_scanner.matched() << std::endl;
+    }
+;
+

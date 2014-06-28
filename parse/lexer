@@ -1,0 +1,187 @@
+%x COMMENT
+%x STRING
+%x CHAR
+
+%%
+
+// ******************** Keywords ********************
+// Loops
+forever {
+    *d_val = matched();
+    return Parser::FOREVER; }
+
+// ******************** Basic data ********************
+[0-9]+                      return Parser::NUMBER;
+[A-Za-z_][A-Za-z0-9_]*      return Parser::IDENTIFIER;
+
+// ******************** Operators ********************
+"(" {
+    *d_val = matched();
+    return Parser::LEFT_PAR; }
+")" {
+    *d_val = matched();
+    return Parser::RIGHT_PAR; }
+
+"**="|"+="|"-="|"*="|"/="|"%="|"<<="|">>="|"^="|"|="|"&="|":=" {
+    *d_val = matched();
+    return Parser::OP_ASSIGN; }
+"||" {
+    *d_val = matched();
+    return Parser::COND_OR; }
+"&&" {
+    *d_val = matched();
+    return Parser::COND_AND; }
+
+"**" {
+    *d_val = matched();
+    return Parser::POW; }
+"*"|"/"|"%" {
+    *d_val = matched();
+    return Parser::OP_FACTOR; }
+"+"|"-" {
+    *d_val = matched();
+    return Parser::OP_TERM; }
+"<<"|">>" {
+    *d_val = matched();
+    return Parser::OP_SHIFT; }
+"&" {
+    *d_val = matched();
+    return Parser::AND; }
+"^" {
+    *d_val = matched();
+    return Parser::XOR; }
+"|" {
+    *d_val = matched();
+    return Parser::OR; }
+
+"<="|">="|"!="|"<"|">"|"==" {
+    *d_val = matched();
+    return Parser::OP_COMPARE; }
+"~"|"!" {
+    *d_val = matched();
+    return Parser::OP_UNARY; }
+
+// ******************** Comment ********************
+\/\/.*$                     //return Parser::COMMENT;
+    
+\/\* {
+    more();
+    begin(StartCondition__::COMMENT);
+}
+<COMMENT> {
+    \*\/ {
+        begin(StartCondition__::INITIAL);
+        //return Parser::COMMENT;
+    }
+    
+    .|\n {
+        more();
+    }
+}
+
+
+// ******************** String ********************
+\" {
+    more();
+    begin(StartCondition__::STRING);
+}
+<STRING> {
+    \" {
+        begin(StartCondition__::INITIAL);
+        return Parser::STRING;
+    }
+    
+    \\.|. {
+        more();
+    }
+    
+    \n {
+        return Parser::ERR_STRING;
+    }
+}
+
+// ******************** Char ********************
+\' {
+    more();
+    begin(StartCondition__::CHAR);
+}
+<CHAR> {
+    \' {
+        begin(StartCondition__::INITIAL);
+        return Parser::CHAR;
+    }
+    
+    \\.|. {
+        more();
+    }
+    
+    \n {
+        return Parser::ERR_CHAR;
+    }
+}
+
+// ******************** Indentation ********************
+^[ \t]*/[^ \t] {
+    unsigned int indent = 0;
+    for (unsigned int i = 0 ; i < length() ; ++i)
+        if (matched()[i] == ' ')
+            ++indent;
+        else
+            indent = (indent + 4) & (~3);
+
+    if (mIndentLevels.empty())
+    {
+        if (indent > 0)
+        {
+            mIndentLevels.push(indent);
+            return Parser::INDENT;
+        }
+    }
+    else if (indent > mIndentLevels.top())
+    {
+        mIndentLevels.push(indent);
+        return Parser::INDENT;
+    }
+    else if (indent < mIndentLevels.top())
+    {
+        mIndentLevels.pop();
+        unsigned int last = mIndentLevels.empty() ? 0 : mIndentLevels.top();
+        
+        if (indent > last)
+            return Parser::ERR_INDENT;
+        if (indent < last)
+        {
+            for (unsigned int i = 0 ; i < indent ; ++i)
+                push(' ');
+            push('\n');
+        }
+        return Parser::DEDENT;
+    }
+}
+
+<<EOF>> {
+    if (!mIndentLevels.empty())
+    {
+        mIndentLevels.pop();
+        
+        if (!mIndentLevels.empty())
+        {
+            unsigned int indent = mIndentLevels.top();
+        
+            for (unsigned int i = 0 ; i < indent ; ++i)
+                push(' ');
+            push('\n');
+        }
+        return Parser::DEDENT;
+    }
+    else
+        leave(0);
+}
+
+// ******************** Spaces ********************
+[ \t]+
+\n                          return Parser::EOL;
+
+// Foo
+.                           return Parser::UNKNOWN_CHAR;
+
