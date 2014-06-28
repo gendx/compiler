@@ -13,9 +13,9 @@ echo "\n***** icmake bootstrap done *****\n"
 echo "\n***** icmake install done *****\n"
 cd ../..
 
-#cp -f bisoncpp/bisonc++/CLASSES.bobcat bobcat/bobcat/CLASSES
+#cp -f CLASSES.bobcat bobcat/bobcat/CLASSES
+echo "" > bobcat/bobcat/CLASSES
 cd bobcat/bobcat
-echo "\nbigint" >> CLASSES
 echo "\n\n\n\n" | ./build libraries strip
 echo "\n***** bobcat build done *****\n"
 ./build install
