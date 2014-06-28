@@ -3,10 +3,9 @@ align
 arg
 datetime
 errno
-fswap
 indent
-mstream
 msg
+mstream
 string
 table
 tablesupport
