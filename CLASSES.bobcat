@@ -6,14 +6,17 @@ exception
 fswap
 gs
 indent
+iterator
 iuo
 linearmap
 mbuf
 mstream
+pattern
 ranger
 stat
 string
 table
 tablebase
+tablelines
 tablesupport
 user
