@@ -4,37 +4,39 @@ git clone http://git.code.sf.net/p/bobcat/code bobcat/
 git clone http://git.code.sf.net/p/flexcpp/code flexcpp/
 git clone http://git.code.sf.net/p/bisoncpp/code bisoncpp/
 
-#apt-get install libbobcat-dev
+apt-get install libbobcat-dev
 
 cd icmake/icmake
 ./icm_bootstrap /
-echo "\n***** icmake bootstrap ok *****\n"
+echo "\n***** icmake bootstrap done *****\n"
 ./icm_install strip all
-echo "\n***** icmake install ok *****\n"
+echo "\n***** icmake install done *****\n"
 cd ../..
 
-cp -f bisoncpp/bisonc++/CLASSES.bobcat bobcat/bobcat/CLASSES
+#cp -f bisoncpp/bisonc++/CLASSES.bobcat bobcat/bobcat/CLASSES
 cd bobcat/bobcat
 echo "\n\n\n\n" | ./build libraries strip
-echo "\n***** bobcat build ok *****\n"
+echo "\n***** bobcat build done *****\n"
+./build lcgen
+echo "\n***** bobcat lcgen done *****\n"
 ./build install
-echo "\n***** bobcat install ok *****\n"
+echo "\n***** bobcat install done *****\n"
 cd ../..
 
 cd flexcpp/flexc++
 ./build program strip
-echo "\n***** flexcpp build ok *****\n"
+echo "\n***** flexcpp build done *****\n"
 ./build install program
-echo "\n***** flexcpp install ok *****\n"
+echo "\n***** flexcpp install done *****\n"
 ./build install skel
-echo "\n***** flexcpp skel ok *****\n"
+echo "\n***** flexcpp skel done *****\n"
 cd ../..
 
 cd bisoncpp/bisonc++
 ./build program strip
-echo "\n***** bisoncpp build ok *****\n"
+echo "\n***** bisoncpp build done *****\n"
 ./build install
-echo "\n***** bisoncpp install ok *****\n"
+echo "\n***** bisoncpp install done *****\n"
 cd ../..
 
 rm -Rf icmake bobcat flexcpp bisoncpp
