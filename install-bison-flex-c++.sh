@@ -4,7 +4,7 @@ git clone http://git.code.sf.net/p/bobcat/code bobcat/
 git clone http://git.code.sf.net/p/flexcpp/code flexcpp/
 git clone http://git.code.sf.net/p/bisoncpp/code bisoncpp/
 
-apt-get install libbobcat-dev
+#apt-get install libbobcat-dev
 
 cd icmake/icmake
 ./icm_bootstrap /
@@ -13,12 +13,11 @@ echo "\n***** icmake bootstrap done *****\n"
 echo "\n***** icmake install done *****\n"
 cd ../..
 
-cp -f bisoncpp/bisonc++/CLASSES.bobcat bobcat/bobcat/CLASSES
+#cp -f bisoncpp/bisonc++/CLASSES.bobcat bobcat/bobcat/CLASSES
 cd bobcat/bobcat
+echo "\nbigint" >> CLASSES
 echo "\n\n\n\n" | ./build libraries strip
 echo "\n***** bobcat build done *****\n"
-./build lcgen
-echo "\n***** bobcat lcgen done *****\n"
 ./build install
 echo "\n***** bobcat install done *****\n"
 cd ../..
