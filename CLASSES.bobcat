@@ -1,4 +1,5 @@
 align
+fswap
 mbuf
 mstream
 table
