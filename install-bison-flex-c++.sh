@@ -11,6 +11,8 @@ echo "\n***** icmake bootstrap ok *****\n"
 echo "\n***** icmake install ok *****\n"
 cd ../..
 
+cp -f flexcpp/flexc++/CLASSES.bobcat bobcat/bobcat/CLASSES
+
 cd bobcat/bobcat
 echo "\n\n\n\n" | ./build libraries strip
 echo "\n***** bobcat build ok *****\n"
