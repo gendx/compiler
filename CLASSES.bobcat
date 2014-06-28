@@ -3,6 +3,7 @@ align
 arg
 datetime
 errno
+fswap
 indent
 msg
 mstream
