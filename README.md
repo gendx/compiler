@@ -12,7 +12,7 @@ In order to build this software, you will need to install :
 Building is currently being tested with [Travis CI](https://travis-ci.org).
 
 
-## Licence
+## License
 
 *Copyright (C) 2014  G. Endignoux*
 
