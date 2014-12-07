@@ -82,14 +82,18 @@ class Scanner: public ScannerBase, private FlexTypes
         using ScannerBase::push;
 
         void push(StartCondition__ sc); // push and revert to sc
-        int popSc(int token = 0);   // revert to the pushed StartCondition,
-                                    // returning 'token'
+        int popSc(int token);   // revert to the pushed StartCondition,
+                                // returning 'token'
+        inline int popSc()
+        {
+            return popSc(0);
+        }
 
             // the start-condition stack can only be used from push and popSC
         class SCStack: private std::stack<StartCondition__> 
         {
             friend void Scanner::push(StartCondition__ sc);
-            friend int Scanner::popSc(int token = 0);
+            friend int Scanner::popSc(int token);
         } d_scStack;
     
         int inspectBlock();
