@@ -1,8 +1,7 @@
 #include "parse/Parser.h"
 
-int main(int argc, char **argv)
+int main()
 {
     Parser parser;
     parser.parse();
 }
-

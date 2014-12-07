@@ -4,66 +4,197 @@
 
 %%
 
+
 // ******************** Keywords ********************
+// Classes
+class {
+    *d_val = matched();
+    std::cerr << "lexer: CLASS" << std::endl;
+    return Parser::CLASS; }
+concept {
+    *d_val = matched();
+    std::cerr << "lexer: CONCEPT" << std::endl;
+    return Parser::CONCEPT; }
+def {
+    *d_val = matched();
+    std::cerr << "lexer: DEF" << std::endl;
+    return Parser::DEF; }
+return {
+    *d_val = matched();
+    std::cerr << "lexer: RETURN" << std::endl;
+    return Parser::RETURN; }
+
 // Loops
 forever {
     *d_val = matched();
+    std::cerr << "lexer: FOREVER" << std::endl;
     return Parser::FOREVER; }
+while {
+    *d_val = matched();
+    std::cerr << "lexer: WHILE" << std::endl;
+    return Parser::WHILE; }
+for {
+    *d_val = matched();
+    std::cerr << "lexer: FOR" << std::endl;
+    return Parser::FOR; }
+in {
+    *d_val = matched();
+    std::cerr << "lexer: IN" << std::endl;
+    return Parser::IN; }
+
+// Conditions
+if {
+    *d_val = matched();
+    std::cerr << "lexer: IF" << std::endl;
+    return Parser::IF; }
+elif {
+    *d_val = matched();
+    std::cerr << "lexer: ELIF" << std::endl;
+    return Parser::ELIF; }
+else {
+    *d_val = matched();
+    std::cerr << "lexer: ELSE" << std::endl;
+    return Parser::ELSE; }
+switch {
+    *d_val = matched();
+    std::cerr << "lexer: SWITCH" << std::endl;
+    return Parser::SWITCH; }
+case {
+    *d_val = matched();
+    std::cerr << "lexer: CASE" << std::endl;
+    return Parser::CASE; }
+
+// Filtering
+match {
+    *d_val = matched();
+    std::cerr << "lexer: MATCH" << std::endl;
+    return Parser::MATCH; }
+with {
+    *d_val = matched();
+    std::cerr << "lexer: WITH" << std::endl;
+    return Parser::WITH; }
+as {
+    *d_val = matched();
+    std::cerr << "lexer: AS" << std::endl;
+    return Parser::AS; }
+default {
+    *d_val = matched();
+    std::cerr << "lexer: DEFAULT" << std::endl;
+    return Parser::DEFAULT; }
+
 
 // ******************** Basic data ********************
-[0-9]+                      return Parser::NUMBER;
-[A-Za-z_][A-Za-z0-9_]*      return Parser::IDENTIFIER;
+[A-Za-z_][A-Za-z0-9_]* {
+    std::cerr << "lexer: IDENTIFIER" << std::endl;
+    return Parser::IDENTIFIER; }
+0x[0-9A-Fa-f]+ {
+    std::cerr << "lexer: NUMBER" << std::endl;
+    return Parser::NUMBER; }
+0b[01]+ {
+    std::cerr << "lexer: NUMBER" << std::endl;
+    return Parser::NUMBER; }
+[+-]?[0-9]*\.[0-9]+e[+-]?[0-9]+ {
+    std::cerr << "lexer: NUMBER" << std::endl;
+    return Parser::NUMBER; }
+[+-]?[0-9]+(\.[0-9]*)?e[+-]?[0-9]+ {
+    std::cerr << "lexer: NUMBER" << std::endl;
+    return Parser::NUMBER; }
+[+-]?[0-9]*\.[0-9]+ {
+    std::cerr << "lexer: NUMBER" << std::endl;
+    return Parser::NUMBER; }
+[+-]?[0-9]+(\.[0-9]*)? {
+    std::cerr << "lexer: NUMBER" << std::endl;
+    return Parser::NUMBER; }
+
 
 // ******************** Operators ********************
 "(" {
     *d_val = matched();
+    std::cerr << "lexer: LEFT_PAR" << std::endl;
     return Parser::LEFT_PAR; }
 ")" {
     *d_val = matched();
+    std::cerr << "lexer: RIGHT_PAR" << std::endl;
     return Parser::RIGHT_PAR; }
+"[" {
+    *d_val = matched();
+    std::cerr << "lexer: LEFT_BRACKET" << std::endl;
+    return Parser::LEFT_BRACKET; }
+"]" {
+    *d_val = matched();
+    std::cerr << "lexer: RIGHT_BRACKET" << std::endl;
+    return Parser::RIGHT_BRACKET; }
+"," {
+    *d_val = matched();
+    std::cerr << "lexer: COMMA" << std::endl;
+    return Parser::COMMA; }
+".." {
+    *d_val = matched();
+    std::cerr << "lexer: RANGE" << std::endl;
+    return Parser::RANGE; }
+"." {
+    *d_val = matched();
+    std::cerr << "lexer: DOT" << std::endl;
+    return Parser::DOT; }
 
 "**="|"+="|"-="|"*="|"/="|"%="|"<<="|">>="|"^="|"|="|"&="|":=" {
     *d_val = matched();
+    std::cerr << "lexer: OP_ASSIGN" << std::endl;
     return Parser::OP_ASSIGN; }
 "||" {
     *d_val = matched();
+    std::cerr << "lexer: COND_OR" << std::endl;
     return Parser::COND_OR; }
 "&&" {
     *d_val = matched();
+    std::cerr << "lexer: COND_AND" << std::endl;
     return Parser::COND_AND; }
 
 "**" {
     *d_val = matched();
+    std::cerr << "lexer: POW" << std::endl;
     return Parser::POW; }
 "*"|"/"|"%" {
     *d_val = matched();
+    std::cerr << "lexer: OP_FACTOR" << std::endl;
     return Parser::OP_FACTOR; }
 "+"|"-" {
     *d_val = matched();
+    std::cerr << "lexer: OP_TERM" << std::endl;
     return Parser::OP_TERM; }
 "<<"|">>" {
     *d_val = matched();
+    std::cerr << "lexer: OP_SHIFT" << std::endl;
     return Parser::OP_SHIFT; }
 "&" {
     *d_val = matched();
+    std::cerr << "lexer: AND" << std::endl;
     return Parser::AND; }
 "^" {
     *d_val = matched();
+    std::cerr << "lexer: XOR" << std::endl;
     return Parser::XOR; }
 "|" {
     *d_val = matched();
+    std::cerr << "lexer: OR" << std::endl;
     return Parser::OR; }
 
 "<="|">="|"!="|"<"|">"|"==" {
     *d_val = matched();
+    std::cerr << "lexer: OP_COMPARE" << std::endl;
     return Parser::OP_COMPARE; }
 "~"|"!" {
     *d_val = matched();
+    std::cerr << "lexer: OP_UNARY" << std::endl;
     return Parser::OP_UNARY; }
 
+
 // ******************** Comment ********************
-\/\/.*$                     //return Parser::COMMENT;
-    
+\/\/.*$ {
+    std::cerr << "\tlexer: ignoring line-comment" << std::endl;
+    //return Parser::COMMENT;
+}
+
 \/\* {
     more();
     begin(StartCondition__::COMMENT);
@@ -71,6 +202,7 @@ forever {
 <COMMENT> {
     \*\/ {
         begin(StartCondition__::INITIAL);
+        std::cerr << "\tlexer: ignoring multi-comment" << std::endl;
         //return Parser::COMMENT;
     }
     
@@ -88,6 +220,7 @@ forever {
 <CHAR> {
     \' {
         begin(StartCondition__::INITIAL);
+        std::cerr << "lexer: CHAR" << std::endl;
         return Parser::CHAR;
     }
     
@@ -96,9 +229,11 @@ forever {
     }
     
     \n {
+        std::cerr << "lexer: ERR_CHAR" << std::endl;
         return Parser::ERR_CHAR;
     }
 }
+
 
 // ******************** String ********************
 \" {
@@ -108,6 +243,7 @@ forever {
 <STRING> {
     \" {
         begin(StartCondition__::INITIAL);
+        std::cerr << "lexer: STRING" << std::endl;
         return Parser::STRING;
     }
     
@@ -116,12 +252,16 @@ forever {
     }
     
     \n {
+        std::cerr << "lexer: ERR_STRING" << std::endl;
         return Parser::ERR_STRING;
     }
 }
 
+
 // ******************** Indentation ********************
-^[ \t]*/[^ \t] {
+^[ \t]*/[^ \t\n] {
+    std::cerr << "\tlexer: checking indent..." << std::endl;
+
     unsigned int indent = 0;
     for (unsigned int i = 0 ; i < length() ; ++i)
         if (matched()[i] == ' ')
@@ -134,12 +274,14 @@ forever {
         if (indent > 0)
         {
             mIndentLevels.push(indent);
+            std::cerr << "lexer: INDENT" << std::endl;
             return Parser::INDENT;
         }
     }
     else if (indent > mIndentLevels.top())
     {
         mIndentLevels.push(indent);
+        std::cerr << "lexer: INDENT" << std::endl;
         return Parser::INDENT;
     }
     else if (indent < mIndentLevels.top())
@@ -147,19 +289,24 @@ forever {
         mIndentLevels.pop();
         unsigned int last = mIndentLevels.empty() ? 0 : mIndentLevels.top();
         
-        if (indent > last)
+        if (indent > last) {
+            std::cerr << "lexer: ERR_INDENT" << std::endl;
             return Parser::ERR_INDENT;
+        }
         if (indent < last)
         {
             for (unsigned int i = 0 ; i < indent ; ++i)
                 push(' ');
-            push('\n');
         }
+        push('\n');
+
+        std::cerr << "lexer: DEDENT" << std::endl;
         return Parser::DEDENT;
     }
 }
 
 <<EOF>> {
+    std::cerr << "lexer: checking EOF..." << std::endl;
     if (!mIndentLevels.empty())
     {
         mIndentLevels.pop();
@@ -167,21 +314,32 @@ forever {
         if (!mIndentLevels.empty())
         {
             unsigned int indent = mIndentLevels.top();
-        
             for (unsigned int i = 0 ; i < indent ; ++i)
                 push(' ');
-            push('\n');
         }
+        push('\n');
+
+        std::cerr << "lexer: DEDENT" << std::endl;
         return Parser::DEDENT;
     }
     else
+    {
+        std::cerr << "lexer: EOF" << std::endl;
         leave(0);
+    }
 }
 
-// ******************** Spaces ********************
-[ \t]+
-\n                          return Parser::EOL;
 
-// Foo
-.                           return Parser::UNKNOWN_CHAR;
+// ******************** Spaces ********************
+[ \t]+ {
+    std::cerr << "\tlexer: ignoring spaces" << std::endl; }
+\n {
+    std::cerr << "lexer: EOL" << std::endl;
+    return Parser::EOL; }
+
+
+// Unknown
+. {
+    std::cerr << "lexer: UNKNOWN_CHAR" << std::endl;
+    return Parser::UNKNOWN_CHAR; }
 
