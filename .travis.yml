@@ -15,7 +15,7 @@ install:
   - if [ "$CXX" == "clang++" ]; then sudo apt-get install --allow-unauthenticated -qq clang-3.4; fi
   - cd install
   - chmod +x ./install-bison-flex-c++.sh
-  - sudo ./install-bison-flex-c++.sh
+  - sudo -E ./install-bison-flex-c++.sh
   - cd ..
   
 script:
@@ -24,5 +24,5 @@ script:
   - bisonc++ grammar
   - cd ../..
   - mkdir bin
-  - g++ -std=c++11 src/main.cpp src/parse/lex.cc src/parse/parse.cc -o bin/compiler
+  - $CXX -std=c++11 src/main.cpp src/parse/lex.cc src/parse/parse.cc -o bin/compiler
   - ls -lR
