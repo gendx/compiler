@@ -16,6 +16,8 @@ echo "\n\n\n\n" | ./build libraries strip
 ./build install
 cd ../..
 
+cp -f patches/startconditions.h flexcpp/flexc++/startconditions/startconditions.h
+cp -f patches/scanner.h flexcpp/flexc++/scanner/scanner.h
 cd flexcpp/flexc++
 ./build program strip
 ./build install program
