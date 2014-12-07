@@ -10,6 +10,7 @@ cd icmake/icmake
 cd ../..
 
 cp -f CLASSES.bobcat bobcat/bobcat/CLASSES
+cp -f patches/fswap bobcat/bobcat/fswap/fswap
 cd bobcat/bobcat
 echo "\n\n\n\n" | ./build libraries strip
 ./build install
