@@ -26,5 +26,5 @@ script:
   - bisonc++ grammar
   - cd ../..
   - mkdir bin
-  - $CXX -std=c++11 src/main.cpp src/parse/lex.cc src/parse/parse.cc -o bin/compiler
+  - $CXX -std=c++11 src/main.cpp src/parse/lex.cc src/parse/parse.cc src/ast/ast.cpp src/ast/expression.cpp src/ast/printvisitor.cpp src/ast/statement.cpp src/ast/visitor.cpp -o bin/compiler
   - ls -lR
