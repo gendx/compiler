@@ -4,5 +4,6 @@
 !grammar
 !Parser.h
 !Parser.ih
+!ParserPreinclude.h
 !Scanner.h
 !Scanner.ih

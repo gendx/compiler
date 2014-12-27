@@ -4,154 +4,148 @@
 //%debug
 %error-verbose
 
-%stype std::string
+%baseclass-preinclude ParserPreinclude.h
+
+%polymorphic
+    EXP: std::shared_ptr<Expression>;
+    EXPLIST: std::shared_ptr<ExprList>;
+    IDENT: std::shared_ptr<Identifier>;
+    CALL: std::shared_ptr<Call>;
+    STMT: std::shared_ptr<Statement>;
+    BLOCK: std::shared_ptr<Block>;
+    IF: std::shared_ptr<If>;
+    SWITCH: std::shared_ptr<Switch>;
+    MATCH: std::shared_ptr<Match>;
+    STR: std::string;
+
+%type <EXP> expr number char string
+%type <EXPLIST> anylist list
+%type <IDENT> identifier
+%type <CALL> call
+%type <STMT> startrule stmt
+%type <BLOCK> stmts indented
+%type <IF> elsestmts
+%type <SWITCH> casestmts
+%type <MATCH> withstmts
+%type <STR> dedent anyeols eols
 
 // lowest precedence first, highest precedence last
-%token IDENTIFIER NUMBER CHAR STRING EOL INDENT DEDENT ERR_CHAR ERR_STRING ERR_INDENT UNKNOWN_CHAR
-%token CLASS CONCEPT DEF RETURN
-%token FOREVER WHILE FOR IN
-%token IF ELSE ELIF SWITCH CASE MATCH WITH AS DEFAULT
-%right OP_ASSIGN
-%left RANGE
-%left COND_OR
-%left COND_AND
-%left OP_COMPARE
-%left OR
-%left XOR
-%left AND
-%left OP_SHIFT
-%left OP_TERM
-%left OP_FACTOR
-%right OP_UNARY
-%right POW
-%left LEFT_PAR RIGHT_PAR LEFT_BRACKET RIGHT_BRACKET COMMA DOT
+%token <STR> IDENTIFIER NUMBER CHAR STRING EOL INDENT DEDENT ERR_CHAR ERR_STRING ERR_INDENT UNKNOWN_CHAR
+%token <STR> CLASS CONCEPT DEF RETURN
+%token <STR> FOREVER WHILE FOR IN
+%token <STR> IF ELSE ELIF SWITCH CASE MATCH WITH AS DEFAULT
+%right <STR> OP_ASSIGN
+%left <STR> RANGE
+%left <STR> COND_OR
+%left <STR> COND_AND
+%left <STR> OP_COMPARE
+%left <STR> OR
+%left <STR> XOR
+%left <STR> AND
+%left <STR> OP_SHIFT
+%left <STR> OP_TERM
+%left <STR> OP_FACTOR
+%right <STR> OP_UNARY
+%right <STR> POW
+%left <STR> LEFT_PAR RIGHT_PAR LEFT_BRACKET RIGHT_BRACKET COMMA DOT
 
 
 %%
 
 startrule:
     stmts {
+        $1->reverse();
         $$ = $1;
-        std::cout << std::endl << "startrule:" << std::endl << std::endl << $$ << std::endl;
+        mAst = AST($1);
     }
 ;
 
 stmts:
     anyeols {
-        $$ = "";
+        $$ = std::make_shared<Block>();
     }
 |   anyeols stmt stmts {
-        $$ = $2 + "; " + $3;
+        $$ = $3;
+        $$->append($2);
     }
 ;
 
 stmt:
     expr EOL {
-        $$ = $1;
-        std::cout << "expr: " << $$ << std::endl;
+        $$ = std::make_shared<ExprStmt>($1);
     }
 |   RETURN expr EOL {
-        $$ = "return(" + $2 + ")";
-        std::cout << $$ << std::endl;
+        $$ = std::make_shared<Return>($2);
     }
-|   classdef {
-        $$ = $1;
-    }
-|   function {
-        $$ = $1;
-    }
-|   loop {
-        $$ = $1;
-    }
-|   condition {
-        $$ = $1;
-    }
-;
-
-
-classdef:
-    CLASS identifier indented {
-        $$ = "class(" + $2 + ", " + $3 + ")";
-        std::cout << $$ << std::endl;
+|   CLASS identifier indented {
+        $$ = std::make_shared<Class>($2, $3);
     }
 |   CONCEPT identifier indented {
-        $$ = "concept(" + $2 + ", " + $3 + ")";
-        std::cout << $$ << std::endl;
+        $$ = std::make_shared<Concept>($2, $3);
     }
-;
-
-function:
-    DEF expr indented {
-        $$ = "def(" + $2 + ", " + $3 + ")";
-        std::cout << $$ << std::endl;
+|   DEF expr indented {
+        $$ = std::make_shared<Function>($2, $3);
     }
-;
-
-loop:
-    FOREVER indented {
-        $$ = "forever(" + $2 + ")";
-        std::cout << $$ << std::endl;
+|   FOREVER indented {
+        $$ = std::make_shared<Forever>($2);
     }
 |   WHILE expr indented {
-        $$ = "while(" + $2 + " : " + $3 + ")";
-        std::cout << $$ << std::endl;
+        $$ = std::make_shared<While>($2, $3);
     }
 |   FOR expr IN expr indented {
-        $$ = "for(" + $2 + " in " + $4 + " : " + $5 + ")";
-        std::cout << $$ << std::endl;
+        $$ = std::make_shared<For>($2, $4, $5);
+    }
+|   IF expr indented elsestmts {
+        $4->append($2, $3);
+        $4->reverse();
+        $$ = $4;
+    }
+|   SWITCH expr EOL casestmts {
+        $4->setExpr($2);
+        $4->reverse();
+        $$ = $4;
+    }
+|   MATCH expr EOL withstmts {
+        $4->setExpr($2);
+        $4->reverse();
+        $$ = $4;
     }
 ;
 
-condition:
-    IF expr indented elsestmts {
-        $$ = "if(" + $2 + " : " + $3 + $4 + ")";
-        std::cout << $$ << std::endl;
-    }
-|   SWITCH expr EOL casestmts {
-        $$ = "switch(" + $2 + $4 + ")";
-        std::cout << $$ << std::endl;
-    }
-|   MATCH expr EOL withstmts {
-        $$ = "match(" + $2 + $4 + ")";
-        std::cout << $$ << std::endl;
-    }
-;
 
 elsestmts:
     {
-        $$ = "";
-    }
-|   ELIF expr indented elsestmts {
-        $$ = ", " + $2 + " : " + $3 + $4;
-        std::cout << $$ << std::endl;
+        $$ = std::make_shared<If>();
     }
 |   ELSE indented {
-        $$ = ", " + $2;
-        std::cout << $$ << std::endl;
+        $$ = std::make_shared<If>($2);
+    }
+|   ELIF expr indented elsestmts {
+        $$ = $4;
+        $$->append($2, $3);
     }
 ;
 
 casestmts:
     {
-        $$ = "";
+        $$ = std::make_shared<Switch>();
     }
 |   DEFAULT indented {
-        $$ = ", default : " + $2;
-        std::cout << "\tcase : " << $$ << std::endl;
+        $$ = std::make_shared<Switch>($2);
     }
 |   CASE expr indented casestmts {
-        $$ = ", " + $2 + " : " + $3 + $4;
-        std::cout << "\tcase : " << $$ << std::endl;
+        $$ = $4;
+        $$->append($2, $3);
     }
 ;
 
 withstmts:
     {
-        $$ = "";
+        $$ = std::make_shared<Match>();
     }
-|   WITH expr AS expr indented withstmts {
-        $$ = ", " + $2 + " @ " + $4 + " : " + $5 + $6;
-        std::cout << "\twith : " << $$ << std::endl;
+|   WITH expr AS identifier indented withstmts {
+        $$ = $6;
+        $$->append($2, $4, $5);
     }
 ;
 
@@ -159,7 +153,6 @@ withstmts:
 indented:
     eols INDENT stmts dedent {
         $$ = $3;
-        std::cout << "indented : " << $$ << std::endl;
     }
 ;
 
@@ -179,160 +172,131 @@ eols:
 
 anylist:
     {
-        $$ = "";
+        $$ = std::make_shared<ExprList>();
     }
 |   list {
         $$ = $1;
-        std::cout << "\tlist : " << $$ << std::endl;
     }
 ;
 
 list:
     list COMMA expr {
-        $$ = $1 + ", " + $3;
+        $$ = $1;
+        $$->append($3);
     }
 |   expr {
-        $$ = $1;
+        $$ = std::make_shared<ExprList>($1);
     }
 ;
 
 
 call:
     identifier LEFT_PAR anylist RIGHT_PAR {
-        $$ = $1 + $2 + $3 + $4;
-        std::cout << "\tcalllist : " << $3 << std::endl;
-        std::cout << "\tcall : " << $$ << std::endl;
-    }
-;
-
-index:
-    LEFT_BRACKET anylist RIGHT_BRACKET {
-        $$ = $1 + $2 + $3;
-        std::cout << "\tbrackets : " << $$ << std::endl;
+        $$ = std::make_shared<Call>($1, $3);
     }
 ;
 
 expr:
-    data {
+    identifier {
         $$ = $1;
-        std::cout << "\tdata : " << $$ << std::endl;
+    }
+|   number {
+        $$ = $1;
+    }
+|   char {
+        $$ = $1;
+    }
+|   string {
+        $$ = $1;
     }
 |   call {
         $$ = $1;
     }
 |   LEFT_PAR expr RIGHT_PAR {
-        $$ = $1 + $2 + $3;
-        std::cout << "\tparen : " << $$ << std::endl;
+        $$ = $2;
     }
 |   LEFT_PAR error RIGHT_PAR {
         std::cout << "error inside parenthesis" << std::endl;
     }
 
 |   expr DOT identifier {
-        $$ = "(" + $1 + $2 + $3 + ")";
-        std::cout << "\tdot : " << $$ << std::endl;
+        $$ = std::make_shared<Member>($1, $3);
     }
 |   expr DOT call {
-        $$ = "(" + $1 + $2 + $3 + ")";
-        std::cout << "\tdotcall : " << $$ << std::endl;
+        $$ = std::make_shared<Method>($1, $3);
     }
 |   expr call {
-        $$ = "(" + $1 + "#" + $2 + ")";
-        std::cout << "\tcall : " << $$ << std::endl;
+        $$ = std::make_shared<Signature>($1, $2);
     }
-|   expr index {
-        $$ = "(" + $1 + $2 + ")";
-        std::cout << "\tindex : " << $$ << std::endl;
+|   expr LEFT_BRACKET anylist RIGHT_BRACKET {
+        $$ = std::make_shared<Index>($1, $3);
     }
 |   expr identifier {
-        $$ = "(" + $1 + "#" + $2 + ")";
-        std::cout << "\tconcat : " << $$ << std::endl;
+        $$ = std::make_shared<Identify>($1, $2);
     }
 
 |   expr OP_ASSIGN expr {
-        $$ = "(" + $1 + $2 + $3 + ")";
-        std::cout << "\tassign : " << $$ << std::endl;
+        $$ = std::make_shared<Binary>($1, $2, $3);
     }
 |   expr RANGE expr {
-        $$ = "(" + $1 + $2 + $3 + ")";
-        std::cout << "\trange : " << $$ << std::endl;
+        $$ = std::make_shared<Binary>($1, $2, $3);
     }
 |   expr COND_OR expr {
-        $$ = "(" + $1 + $2 + $3 + ")";
-        std::cout << "\tcond_or : " << $$ << std::endl;
+        $$ = std::make_shared<Binary>($1, $2, $3);
     }
 |   expr COND_AND expr {
-        $$ = "(" + $1 + $2 + $3 + ")";
-        std::cout << "\tcond_and : " << $$ << std::endl;
+        $$ = std::make_shared<Binary>($1, $2, $3);
     }
 |   expr OP_COMPARE expr {
-        $$ = "(" + $1 + $2 + $3 + ")";
-        std::cout << "\tcompare : " << $$ << std::endl;
+        $$ = std::make_shared<Binary>($1, $2, $3);
     }
 |   expr OR expr {
-        $$ = "(" + $1 + $2 + $3 + ")";
-        std::cout << "\tor : " << $$ << std::endl;
+        $$ = std::make_shared<Binary>($1, $2, $3);
     }
 |   expr XOR expr {
-        $$ = "(" + $1 + $2 + $3 + ")";
-        std::cout << "\txor : " << $$ << std::endl;
+        $$ = std::make_shared<Binary>($1, $2, $3);
     }
 |   expr AND expr {
-        $$ = "(" + $1 + $2 + $3 + ")";
-        std::cout << "\tand : " << $$ << std::endl;
+        $$ = std::make_shared<Binary>($1, $2, $3);
     }
 |   expr OP_SHIFT expr {
-        $$ = "(" + $1 + $2 + $3 + ")";
-        std::cout << "\tshift : " << $$ << std::endl;
+        $$ = std::make_shared<Binary>($1, $2, $3);
     }
 |   expr OP_TERM expr {
-        $$ = "(" + $1 + $2 + $3 + ")";
-        std::cout << "\tterm : " << $$ << std::endl;
+        $$ = std::make_shared<Binary>($1, $2, $3);
     }
 |   expr OP_FACTOR expr {
-        $$ = "(" + $1 + $2 + $3 + ")";
-        std::cout << "\tfactor : " << $$ << std::endl;
+        $$ = std::make_shared<Binary>($1, $2, $3);
     }
 |   expr POW expr {
-        $$ = "(" + $1 + $2 + $3 + ")";
-        std::cout << "\tpow : " << $$ << std::endl;
+        $$ = std::make_shared<Binary>($1, $2, $3);
     }
 |   OP_UNARY expr {
-        $$ = "(" + $1 + $2 + ")";
-        std::cout << "\tunary : " << $$ << std::endl;
+        $$ = std::make_shared<Unary>($1, $2);
     }
 |   OP_TERM expr %prec OP_UNARY {
-        $$ = "(" + $1 + $2 + ")";
-        std::cout << "\tunary : " << $$ << std::endl;
+        $$ = std::make_shared<Unary>($1, $2);
     }
 ;
 
-
-data:
-    identifier | number | char | string
-;
 
 identifier:
     IDENTIFIER {
-        $$ = d_scanner.matched();
-        std::cout << "ident (" << d_scanner.matched().size() << ") : " << d_scanner.matched() << std::endl;
+        $$ = std::make_shared<Identifier>(d_scanner.matched());
     }
 ;
 number:
     NUMBER {
-        $$ = d_scanner.matched();
-        std::cout << "num (" << d_scanner.matched().size() << ") : " << d_scanner.matched() << std::endl;
+        $$ = std::make_shared<DataNumber>(d_scanner.matched());
     }
 ;
 char:
     CHAR {
-        $$ = d_scanner.matched();
-        std::cout << "char (" << d_scanner.matched().size() << ") : " << d_scanner.matched() << std::endl;
+        $$ = std::make_shared<DataChar>(d_scanner.matched());
     }
 ;
 string:
     STRING {
-        $$ = d_scanner.matched();
-        std::cout << "str (" << d_scanner.matched().size() << ") : " << d_scanner.matched() << std::endl;
+        $$ = std::make_shared<DataString>(d_scanner.matched());
     }
 ;

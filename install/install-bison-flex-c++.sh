@@ -24,6 +24,7 @@ cd flexcpp/flexc++
 ./build install skel
 cd ../..
 
+cp -f patches/bisonc++polymorphic.inline bisoncpp/bisonc++/skeletons/bisonc++polymorphic.inline
 cd bisoncpp/bisonc++
 ./build program strip
 ./build install program

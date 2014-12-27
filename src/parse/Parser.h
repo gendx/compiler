@@ -19,6 +19,7 @@ class Parser: public ParserBase
         Parser();
     
         int parse();
+        AST ast();
 
     private:
         void error(char const *msg);    // called on (syntax) errors
@@ -33,7 +34,15 @@ class Parser: public ParserBase
         void nextToken();
         void print__();
         void exceptionHandler__(std::exception const &exc);
+
+        AST mAst;
 };
+
+
+inline AST Parser::ast()
+{
+    return mAst;
+}
 
 
 #endif
