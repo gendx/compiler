@@ -3,6 +3,7 @@
 
 #include <unordered_map>
 #include <map>
+#include <stdexcept>
 
 Expression::~Expression()
 {
