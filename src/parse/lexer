@@ -19,10 +19,24 @@ def {
     *d_val = matched();
     std::cerr << "lexer: DEF" << std::endl;
     return Parser::DEF; }
+
+// Flow control
 return {
     *d_val = matched();
     std::cerr << "lexer: RETURN" << std::endl;
     return Parser::RETURN; }
+break {
+    *d_val = matched();
+    std::cerr << "lexer: BREAK" << std::endl;
+    return Parser::BREAK; }
+continue {
+    *d_val = matched();
+    std::cerr << "lexer: CONTINUE" << std::endl;
+    return Parser::CONTINUE; }
+pass {
+    *d_val = matched();
+    std::cerr << "lexer: PASS" << std::endl;
+    return Parser::PASS; }
 
 // Loops
 forever {

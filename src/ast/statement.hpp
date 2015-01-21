@@ -42,6 +42,36 @@ public:
 };
 
 
+/** Break **/
+class Break : public Statement
+{
+public:
+    inline Break() {}
+
+    void accept(Visitor& v);
+};
+
+
+/** Continue **/
+class Continue : public Statement
+{
+public:
+    inline Continue() {}
+
+    void accept(Visitor& v);
+};
+
+
+/** Pass **/
+class Pass : public Statement
+{
+public:
+    inline Pass() {}
+
+    void accept(Visitor& v);
+};
+
+
 /** Block **/
 class Block : public Statement
 {

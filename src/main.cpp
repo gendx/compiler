@@ -1,5 +1,6 @@
 #include "parse/Parser.h"
 #include "ast/printvisitor.hpp"
+#include "ast/printcode.hpp"
 
 int main()
 {
@@ -7,4 +8,5 @@ int main()
     parser.parse();
     AST ast = parser.ast();
     PrintVisitor::print(std::cout, ast);
+    PrintCode::print(std::cerr, ast);
 }

@@ -14,6 +14,18 @@ void Return::accept(Visitor& v)
 {
     v.visit(*this);
 }
+void Break::accept(Visitor& v)
+{
+    v.visit(*this);
+}
+void Continue::accept(Visitor& v)
+{
+    v.visit(*this);
+}
+void Pass::accept(Visitor& v)
+{
+    v.visit(*this);
+}
 void Block::accept(Visitor& v)
 {
     v.visit(*this);

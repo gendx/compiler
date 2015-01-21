@@ -1,19 +1,27 @@
-#include "printvisitor.hpp"
+#include "printcode.hpp"
 
 #include <ostream>
 
-void PrintVisitor::print(std::ostream& s, AST& ast)
+void PrintCode::print(std::ostream& s, AST& ast)
 {
-    PrintVisitor v(s);
+    PrintCode v(s);
     ast.visit(v);
     s << std::endl;
 }
 
-PrintVisitor::PrintVisitor(std::ostream& s) :
-    out(s) {}
+PrintCode::PrintCode(std::ostream& s) :
+    out(s), indent(-1) {}
 
 
-void PrintVisitor::visit(ExprList& e)
+void PrintCode::endl()
+{
+    out << std::endl;
+    for (unsigned int i = 0 ; i < indent ; ++i)
+        out << "    ";
+}
+
+
+void PrintCode::visit(ExprList& e)
 {
     bool begin = false;
     for (auto&& it : e.mExpressions)
@@ -25,41 +33,39 @@ void PrintVisitor::visit(ExprList& e)
     }
 }
 
-void PrintVisitor::visit(Identifier& e)
+void PrintCode::visit(Identifier& e)
 {
     out << e.mName;
 }
 
-void PrintVisitor::visit(Data& e)
+void PrintCode::visit(Data& e)
 {
     out << e.mValue;
 }
 
-void PrintVisitor::visit(DataString& e)
+void PrintCode::visit(DataString& e)
 {
     out << e.mValue;
 }
 
-void PrintVisitor::visit(DataChar& e)
+void PrintCode::visit(DataChar& e)
 {
     out << e.mValue;
 }
 
-void PrintVisitor::visit(DataNumber& e)
+void PrintCode::visit(DataNumber& e)
 {
     out << e.mValue;
 }
 
-void PrintVisitor::visit(Identify& e)
+void PrintCode::visit(Identify& e)
 {
-    out << "(";
     e.mType->accept(*this);
-    out << "#";
+    out << " ";
     e.mIdentifier->accept(*this);
-    out << ")";
 }
 
-void PrintVisitor::visit(Call& e)
+void PrintCode::visit(Call& e)
 {
     e.mIdentifier->accept(*this);
     out << "(";
@@ -67,50 +73,43 @@ void PrintVisitor::visit(Call& e)
     out << ")";
 }
 
-void PrintVisitor::visit(Member& e)
+void PrintCode::visit(Member& e)
 {
-    out << "(";
     e.mExpression->accept(*this);
     out << ".";
     e.mMember->accept(*this);
-    out << ")";
 }
 
-void PrintVisitor::visit(Method& e)
+void PrintCode::visit(Method& e)
 {
-    out << "(";
     e.mExpression->accept(*this);
     out << ".";
     e.mMethod->accept(*this);
-    out << ")";
 }
 
-void PrintVisitor::visit(Signature& e)
+void PrintCode::visit(Signature& e)
 {
-    out << "(";
     e.mType->accept(*this);
-    out << "#";
+    out << " ";
     e.mCall->accept(*this);
-    out << ")";
 }
 
-void PrintVisitor::visit(Index& e)
+void PrintCode::visit(Index& e)
 {
-    out << "(";
     e.mExpression->accept(*this);
     out << "[";
     e.mArgs->accept(*this);
-    out << "])";
+    out << "]";
 }
 
-void PrintVisitor::visit(Unary& e)
+void PrintCode::visit(Unary& e)
 {
     out << "(" << Unary::opToStr(e.mOperator);
     e.mArg->accept(*this);
     out << ")";
 }
 
-void PrintVisitor::visit(Binary& e)
+void PrintCode::visit(Binary& e)
 {
     out << "(";
     e.mLhs->accept(*this);
@@ -120,168 +119,153 @@ void PrintVisitor::visit(Binary& e)
 }
 
 
-void PrintVisitor::visit(ExprStmt& s)
+void PrintCode::visit(ExprStmt& s)
 {
+    this->endl();
     s.mExpression->accept(*this);
 }
 
-void PrintVisitor::visit(Return& s)
+void PrintCode::visit(Return& s)
 {
-    out << "return(";
+    this->endl();
+    out << "return ";
     s.mExpression->accept(*this);
-    out << ")";
 }
 
-void PrintVisitor::visit(Break& s)
+void PrintCode::visit(Break& s)
 {
+    this->endl();
     out << "break";
 }
 
-void PrintVisitor::visit(Continue& s)
+void PrintCode::visit(Continue& s)
 {
+    this->endl();
     out << "continue";
 }
 
-void PrintVisitor::visit(Pass& s)
+void PrintCode::visit(Pass& s)
 {
+    this->endl();
     out << "pass";
 }
 
-void PrintVisitor::visit(Block& s)
+void PrintCode::visit(Block& s)
 {
-    bool begin = false;
+    ++indent;
     for (auto&& it : s.mStatements)
-    {
-        if (begin)
-            out << "; ";
-        begin = true;
         it->accept(*this);
-    }
+    --indent;
 }
 
-void PrintVisitor::visit(Class& s)
+void PrintCode::visit(Class& s)
 {
-    out << "class(";
+    this->endl();
+    out << "class ";
     s.mName->accept(*this);
-    out << " : ";
     s.mBlock->accept(*this);
-    out << ")";
 }
 
-void PrintVisitor::visit(Concept& s)
+void PrintCode::visit(Concept& s)
 {
-    out << "concept(";
+    this->endl();
+    out << "concept ";
     s.mName->accept(*this);
-    out << " : ";
     s.mBlock->accept(*this);
-    out << ")";
 }
 
-void PrintVisitor::visit(Function& s)
+void PrintCode::visit(Function& s)
 {
-    out << "def(";
+    this->endl();
+    out << "def ";
     s.mSignature->accept(*this);
-    out << " : ";
     s.mBlock->accept(*this);
-    out << ")";
 }
 
-void PrintVisitor::visit(Forever& s)
+void PrintCode::visit(Forever& s)
 {
-    out << "forever(";
+    this->endl();
+    out << "forever";
     s.mBlock->accept(*this);
-    out << ")";
 }
 
-void PrintVisitor::visit(While& s)
+void PrintCode::visit(While& s)
 {
-    out << "while(";
+    this->endl();
+    out << "while ";
     s.mCondition->accept(*this);
-    out << " : ";
     s.mBlock->accept(*this);
-    out << ")";
 }
 
-void PrintVisitor::visit(For& s)
+void PrintCode::visit(For& s)
 {
-    out << "for(";
+    this->endl();
+    out << "for ";
     s.mVariable->accept(*this);
     out << " in ";
     s.mRange->accept(*this);
-    out << " : ";
     s.mBlock->accept(*this);
-    out << ")";
 }
 
-void PrintVisitor::visit(If& s)
+void PrintCode::visit(If& s)
 {
-    out << "if(";
-
     bool begin = false;
     for (auto&& it : s.mConditions)
     {
+        this->endl();
         if (begin)
-            out << ", ";
+            out << "elsif ";
+        else
+            out << "if ";
         begin = true;
 
         it.first->accept(*this);
-        out << " : ";
         it.second->accept(*this);
     }
 
     if (s.mElse)
     {
-        out << ", ";
+        this->endl();
+        out << "else";
         s.mElse->accept(*this);
     }
-    out << ")";
 }
 
-void PrintVisitor::visit(Switch& s)
+void PrintCode::visit(Switch& s)
 {
-    out << "switch(";
+    this->endl();
+    out << "switch ";
     s.mExpression->accept(*this);
-    out << ", ";
 
-    bool begin = false;
     for (auto&& it : s.mConditions)
     {
-        if (begin)
-            out << ", ";
-        begin = true;
-
+        this->endl();
+        out << "case ";
         it.first->accept(*this);
-        out << " : ";
         it.second->accept(*this);
     }
 
     if (s.mDefault)
     {
-        out << ", default : ";
+        this->endl();
+        out << "default";
         s.mDefault->accept(*this);
     }
-    out << ")";
 }
 
-void PrintVisitor::visit(Match& s)
+void PrintCode::visit(Match& s)
 {
-    out << "match(";
+    this->endl();
+    out << "match ";
     s.mExpression->accept(*this);
-    out << ", ";
 
-    bool begin = false;
     for (auto&& it : s.mConditions)
     {
-        if (begin)
-            out << ", ";
-        begin = true;
-
+        this->endl();
+        out << "with ";
         std::get<0>(it)->accept(*this);
-        out << " @ ";
+        out << " as ";
         std::get<1>(it)->accept(*this);
-        out << " : ";
         std::get<2>(it)->accept(*this);
     }
-
-    out << ")";
 }

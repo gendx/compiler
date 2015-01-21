@@ -1,10 +1,10 @@
-#ifndef PRINTVISITOR_HPP
-#define PRINTVISITOR_HPP
+#ifndef PRINTCODE_HPP
+#define PRINTCODE_HPP
 
 #include "visitor.hpp"
 #include "ast.hpp"
 
-class PrintVisitor : public Visitor
+class PrintCode : public Visitor
 {
 public:
     static void print(std::ostream& s, AST& ast);
@@ -41,9 +41,12 @@ public:
     void visit(Match& s);
 
 private:
-    PrintVisitor(std::ostream& s);
+    PrintCode(std::ostream& s);
+
+    void endl();
 
     std::ostream& out;
+    int indent;
 };
 
-#endif // PRINTVISITOR_HPP
+#endif // PRINTCODE_HPP

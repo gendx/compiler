@@ -30,8 +30,11 @@
 %type <STR> dedent anyeols eols
 
 // lowest precedence first, highest precedence last
-%token <STR> IDENTIFIER NUMBER CHAR STRING EOL INDENT DEDENT ERR_CHAR ERR_STRING ERR_INDENT UNKNOWN_CHAR
-%token <STR> CLASS CONCEPT DEF RETURN
+%token <STR> IDENTIFIER NUMBER CHAR STRING
+%token <STR> EOL INDENT DEDENT
+%token <STR> ERR_CHAR ERR_STRING ERR_INDENT UNKNOWN_CHAR
+%token <STR> CLASS CONCEPT DEF
+%token <STR> RETURN BREAK CONTINUE PASS
 %token <STR> FOREVER WHILE FOR IN
 %token <STR> IF ELSE ELIF SWITCH CASE MATCH WITH AS DEFAULT
 %right <STR> OP_ASSIGN
@@ -76,6 +79,15 @@ stmt:
     }
 |   RETURN expr EOL {
         $$ = std::make_shared<Return>($2);
+    }
+|   BREAK EOL {
+        $$ = std::make_shared<Break>();
+    }
+|   CONTINUE EOL {
+        $$ = std::make_shared<Continue>();
+    }
+|   PASS EOL {
+        $$ = std::make_shared<Pass>();
     }
 |   CLASS identifier indented {
         $$ = std::make_shared<Class>($2, $3);
@@ -152,6 +164,7 @@ withstmts:
 
 indented:
     eols INDENT stmts dedent {
+        $3->reverse();
         $$ = $3;
     }
 ;

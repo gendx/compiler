@@ -26,6 +26,9 @@ public:
 
     virtual void visit(ExprStmt& s) = 0;
     virtual void visit(Return& s) = 0;
+    virtual void visit(Break& s) = 0;
+    virtual void visit(Continue& s) = 0;
+    virtual void visit(Pass& s) = 0;
     virtual void visit(Block& s) = 0;
     virtual void visit(Class& s) = 0;
     virtual void visit(Concept& s) = 0;
