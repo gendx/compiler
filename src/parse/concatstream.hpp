@@ -16,15 +16,39 @@
     along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.txt
 */
 
-#include "parse/Parser.h"
-#include "ast/printvisitor.hpp"
-#include "ast/printcode.hpp"
+#ifndef CONCATSTREAM_HPP
+#define CONCATSTREAM_HPP
 
-int main()
+#include <iostream>
+#include <sstream>
+
+class ConcatStreamBuf : public std::streambuf
 {
-    Parser parser;
-    parser.parse();
-    AST ast = parser.ast();
-    PrintVisitor::print(std::cout, ast);
-    PrintCode::print(std::cerr, ast);
+public:
+    inline ConcatStreamBuf(std::istream& sbuf1, std::istream& sbuf2);
+
+    int underflow();
+
+private:
+    int useBuf;
+    std::streambuf* sbuf_[2];
+    char buffer_[1024];
+};
+
+inline ConcatStreamBuf::ConcatStreamBuf(std::istream& sbuf1, std::istream& sbuf2) :
+    useBuf(0), sbuf_{sbuf1.rdbuf(), sbuf2.rdbuf()}
+{
 }
+
+
+class PrependIstream : public std::istream
+{
+public:
+    PrependIstream(std::istream& in, const std::string& prepend);
+
+private:
+    std::istringstream mPrepend;
+    ConcatStreamBuf mBuf;
+};
+
+#endif // CONCATSTREAM_HPP

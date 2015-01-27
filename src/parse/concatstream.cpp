@@ -16,15 +16,33 @@
     along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.txt
 */
 
-#include "parse/Parser.h"
-#include "ast/printvisitor.hpp"
-#include "ast/printcode.hpp"
+#include "concatstream.hpp"
 
-int main()
+int ConcatStreamBuf::underflow()
 {
-    Parser parser;
-    parser.parse();
-    AST ast = parser.ast();
-    PrintVisitor::print(std::cout, ast);
-    PrintCode::print(std::cerr, ast);
+    if (this->gptr() == this->egptr())
+    {
+        std::streamsize size = 0;
+        while (useBuf < 2)
+        {
+            size = this->sbuf_[useBuf]->sgetn(this->buffer_, sizeof this->buffer_);
+            if (!size)
+                useBuf++;
+            else
+                break;
+        }
+        this->setg(this->buffer_, this->buffer_, this->buffer_ + size);
+    }
+
+    return this->gptr() == this->egptr()
+         ? std::char_traits<char>::eof()
+         : std::char_traits<char>::to_int_type(*this->gptr());
+}
+
+
+PrependIstream::PrependIstream(std::istream& in, const std::string& prepend) :
+    std::istream(&mBuf),
+    mPrepend(prepend),
+    mBuf(mPrepend, in)
+{
 }
