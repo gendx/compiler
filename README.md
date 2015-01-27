@@ -6,7 +6,7 @@ This project is a test of flexc++/bisonc++ for a small programming language. [![
 ## Installation
 
 In order to build this software, you will need to install :
-* A C++ compiler supporting the C++11 standard such as GCC 4.8.
+* A C++ compiler supporting the C++14 standard such as GCC 4.9 or Clang 3.5.
 * [flexc++](http://flexcpp.sourceforge.net/) and [bisonc++](http://bisoncpp.sourceforge.net/) from University of Groningen.
 
 Building is currently being tested with [Travis CI](https://travis-ci.org).
