@@ -122,12 +122,12 @@ public:
 class Function : public Statement
 {
 public:
-    inline Function(std::shared_ptr<Expression> signature, std::shared_ptr<Block> block) :
+    inline Function(std::shared_ptr<Signature> signature, std::shared_ptr<Block> block) :
         mSignature(signature), mBlock(block) {}
 
     void accept(Visitor& v);
 
-    std::shared_ptr<Expression> mSignature;
+    std::shared_ptr<Signature> mSignature;
     std::shared_ptr<Block> mBlock;
 };
 

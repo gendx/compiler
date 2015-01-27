@@ -6,7 +6,9 @@
 #include "Parser.h"
 
 
-Parser::Parser()
+Parser::Parser(std::istream &in, std::ostream &out) :
+    mIstream(in, "\n"),
+    d_scanner(mIstream, out)
 {
     d_scanner.setSval(&d_val__);
 }

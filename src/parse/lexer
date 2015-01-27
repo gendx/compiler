@@ -1,6 +1,7 @@
 %x COMMENT
 %x CHAR
 %x STRING
+%x NEWLINE
 
 %%
 
@@ -273,7 +274,27 @@ default {
 
 
 // ******************** Indentation ********************
-^[ \t]*/[^ \t\n] {
+<NEWLINE>^[ \t]*/\n {
+    begin(StartCondition__::INITIAL);
+    std::cerr << "\tlexer: empty line..." << std::endl;
+}
+
+<NEWLINE>^[ \t]*\/\/ {
+    begin(StartCondition__::INITIAL);
+    std::cerr << "\tlexer: empty line before comment..." << std::endl;
+    push('/');
+    push('/');
+}
+
+<NEWLINE>^[ \t]*\/\* {
+    begin(StartCondition__::INITIAL);
+    std::cerr << "\tlexer: empty line before comment..." << std::endl;
+    push('*');
+    push('/');
+}
+
+<NEWLINE>^[ \t]*/[^ \t\n] {
+    begin(StartCondition__::INITIAL);
     std::cerr << "\tlexer: checking indent..." << std::endl;
 
     unsigned int indent = 0;
@@ -283,8 +304,11 @@ default {
         else
             indent = (indent + 4) & (~3);
 
+    std::cerr << "\tlexer: indent = " << indent << std::endl;
+
     if (mIndentLevels.empty())
     {
+        std::cerr << "\tlexer: no previous indent" << std::endl;
         if (indent > 0)
         {
             mIndentLevels.push(indent);
@@ -294,20 +318,23 @@ default {
     }
     else if (indent > mIndentLevels.top())
     {
+        std::cerr << "\tlexer: previous indent = " << mIndentLevels.top() << std::endl;
         mIndentLevels.push(indent);
         std::cerr << "lexer: INDENT" << std::endl;
         return Parser::INDENT;
     }
     else if (indent < mIndentLevels.top())
     {
+        std::cerr << "\tlexer: previous indent = " << mIndentLevels.top() << std::endl;
         mIndentLevels.pop();
         unsigned int last = mIndentLevels.empty() ? 0 : mIndentLevels.top();
-        
+        std::cerr << "\tlexer: last indent = " << last << std::endl;
+
         if (indent > last) {
             std::cerr << "lexer: ERR_INDENT" << std::endl;
             return Parser::ERR_INDENT;
         }
-        if (indent < last)
+        if (indent <= last)
         {
             for (unsigned int i = 0 ; i < indent ; ++i)
                 push(' ');
@@ -319,12 +346,13 @@ default {
     }
 }
 
-<<EOF>> {
-    std::cerr << "lexer: checking EOF..." << std::endl;
+<NEWLINE><<EOF>> {
+    begin(StartCondition__::INITIAL);
+    std::cerr << "\tlexer: checking EOF..." << std::endl;
     if (!mIndentLevels.empty())
     {
         mIndentLevels.pop();
-        
+
         if (!mIndentLevels.empty())
         {
             unsigned int indent = mIndentLevels.top();
@@ -343,11 +371,16 @@ default {
     }
 }
 
+<<EOF>> {
+    push('\n');
+}
+
 
 // ******************** Spaces ********************
 [ \t]+ {
     std::cerr << "\tlexer: ignoring spaces" << std::endl; }
 \n {
+    begin(StartCondition__::NEWLINE);
     std::cerr << "lexer: EOL" << std::endl;
     return Parser::EOL; }
 

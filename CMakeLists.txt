@@ -14,6 +14,7 @@ ADD_EXECUTABLE(
     src/ast/printvisitor.cpp
     src/ast/statement.cpp
     src/ast/visitor.cpp
+    src/parse/concatstream.cpp
     src/parse/lex.cc
     src/parse/parse.cc
 )

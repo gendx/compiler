@@ -8,15 +8,19 @@
 // $insert scanner.h
 #include "Scanner.h"
 
+#include "concatstream.hpp"
+
 
 #undef Parser
 class Parser: public ParserBase
 {
+    PrependIstream mIstream;
+
     // $insert scannerobject
     Scanner d_scanner;
         
     public:
-        Parser();
+        explicit Parser(std::istream &in = std::cin, std::ostream &out = std::cout);
     
         int parse();
         AST ast();
