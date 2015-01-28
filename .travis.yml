@@ -14,7 +14,7 @@ install:
   - if [ "$CXX" == "g++" ]; then sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 90; fi
   - if [ "$CXX" == "clang++" ]; then sudo apt-get install --allow-unauthenticated -qq clang-3.5; fi
   - if [ "$CXX" == "clang++" ]; then sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-3.5 90; fi
-  - if [ "$CXX" == "clang++" ]; then sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-3.5 90; fi
+  - if [ "$CXX" == "clang++" ]; then sudo find / -name *clang*; fi
   - cd install
   - chmod +x ./install-bison-flex-c++.sh
   - sudo -E ./install-bison-flex-c++.sh
