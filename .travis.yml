@@ -12,6 +12,7 @@ before_install:
   - if [ "$CXX" == "clang++" ]; then wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key|sudo apt-key add -; fi
   - ls -lR /var/lib/apt/lists
   - if [ "$CXX" == "clang++" ]; then sudo rm -R /var/lib/apt/lists/*; fi
+  - if [ "$CXX" == "clang++" ]; then sudo mkdir -p /var/lib/apt/lists/partial; fi
   - sudo apt-get update
   - ls -lR /var/lib/apt/lists
 
