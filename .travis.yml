@@ -1,26 +1,18 @@
 language: cpp
 
 compiler:
+  - gcc
   - clang
 
 before_install:
-  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-  - ls -lR /var/lib/apt/lists
-  - sudo apt-get update -qq
-  - ls -lR /var/lib/apt/lists
-  - if [ "$CXX" == "clang++" ]; then sudo apt-add-repository 'deb http://llvm.org/apt/precise/ llvm-toolchain-precise-3.5 main'; fi
-  - if [ "$CXX" == "clang++" ]; then wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key | sudo apt-key add -; fi
-  - ls -lR /var/lib/apt/lists
-  - if [ "$CXX" == "clang++" ]; then sudo rm -R /var/lib/apt/lists/*; fi
-  - if [ "$CXX" == "clang++" ]; then sudo mkdir -p /var/lib/apt/lists/partial; fi
-  - sudo apt-get update
-  - ls -lR /var/lib/apt/lists
+  - cd install
+  - if [ "$CXX" == "g++" ]; then chmod +x ./install-gcc.sh; fi
+  - if [ "$CXX" == "g++" ]; then sudo -E ./install-gcc.sh; fi
+  - if [ "$CXX" == "clang++" ]; then chmod +x ./install-clang.sh; fi
+  - if [ "$CXX" == "clang++" ]; then sudo -E ./install-clang.sh; fi
+  - cd ..
 
 install:
-  - if [ "$CXX" == "g++" ]; then sudo apt-get install -qq g++-4.9; fi
-  - if [ "$CXX" == "g++" ]; then sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 90; fi
-  - if [ "$CXX" == "clang++" ]; then sudo apt-get install clang-3.5; fi
-  - if [ "$CXX" == "clang++" ]; then sudo find / -name *clang*; fi
   - cd install
   - chmod +x ./install-bison-flex-c++.sh
   - sudo -E ./install-bison-flex-c++.sh
