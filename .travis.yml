@@ -8,7 +8,8 @@ before_install:
   - sudo apt-get update -qq
   - if [ "$CXX" == "clang++" ]; then sudo apt-add-repository 'deb http://llvm.org/apt/precise/ llvm-toolchain-precise main'; fi
   - if [ "$CXX" == "clang++" ]; then wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key|sudo apt-key add -; fi
-  - sudo apt-get update -qq
+  - if [ "$CXX" == "clang++" ]; then sudo rm -R /var/lib/apt/lists/*; fi
+  - sudo apt-get update
 
 install:
   - if [ "$CXX" == "g++" ]; then sudo apt-get install -qq g++-4.9; fi
