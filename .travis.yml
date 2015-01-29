@@ -5,11 +5,15 @@ compiler:
 
 before_install:
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - ls -lR /var/lib/apt/lists
   - sudo apt-get update -qq
+  - ls -lR /var/lib/apt/lists
   - if [ "$CXX" == "clang++" ]; then sudo apt-add-repository 'deb http://llvm.org/apt/precise/ llvm-toolchain-precise main'; fi
   - if [ "$CXX" == "clang++" ]; then wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key|sudo apt-key add -; fi
+  - ls -lR /var/lib/apt/lists
   - if [ "$CXX" == "clang++" ]; then sudo rm -R /var/lib/apt/lists/*; fi
   - sudo apt-get update
+  - ls -lR /var/lib/apt/lists
 
 install:
   - if [ "$CXX" == "g++" ]; then sudo apt-get install -qq g++-4.9; fi
