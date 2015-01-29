@@ -5,14 +5,16 @@ compiler:
   - clang
 
 before_install:
-  - if [ "$CXX" == "g++" ]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test; fi
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - if [ "$CXX" == "clang++" ]; then sudo apt-add-repository 'deb http://llvm.org/apt/precise/ llvm-toolchain-precise main'; fi
+  - if [ "$CXX" == "clang++" ]; then wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key|sudo apt-key add -; fi
   - if [ "$CXX" == "clang++" ]; then sudo add-apt-repository -y ppa:h-rayflood/llvm; fi
   - sudo apt-get update -qq
 
 install:
   - if [ "$CXX" == "g++" ]; then sudo apt-get install -qq g++-4.9; fi
   - if [ "$CXX" == "g++" ]; then sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 90; fi
-  - if [ "$CXX" == "clang++" ]; then sudo apt-get install --allow-unauthenticated -qq clang-3.5; fi
+  - if [ "$CXX" == "clang++" ]; then sudo apt-get install clang-3.5; fi
   - if [ "$CXX" == "clang++" ]; then sudo find / -name *clang*; fi
   - cd install
   - chmod +x ./install-bison-flex-c++.sh
