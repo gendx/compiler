@@ -1,0 +1,13 @@
+diff --git a/bisonc++/skeletons/bisonc++polymorphic.inline b/bisonc++/skeletons/bisonc++polymorphic.inline
+index a14a5d3..c746bfa 100644
+--- a/bisonc++/skeletons/bisonc++polymorphic.inline
++++ b/bisonc++/skeletons/bisonc++polymorphic.inline
+@@ -111,7 +111,7 @@ inline SType &SType::operator=(Tp_ &&rhs)
+ {
+     return Assign<
+                 std::is_rvalue_reference<Tp_ &&>::value, 
+-                typename std::remove_reference<Tp_>::type
++                typename std::remove_const<typename std::remove_reference<Tp_>::type>::type
+            >::assign(this, std::forward<Tp_>(rhs));
+ }
+ 

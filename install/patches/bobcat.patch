@@ -1,0 +1,14 @@
+diff --git a/bobcat/fswap/fswap b/bobcat/fswap/fswap
+index 820843f..33326c4 100644
+--- a/bobcat/fswap/fswap
++++ b/bobcat/fswap/fswap
+@@ -41,6 +41,9 @@ class FSwap
+     
+     template <typename SwapType, typename Type>
+     static void tswap(Type &lhs, Type &rhs);                // .f
++
++    template <typename Type>
++    friend void fswap(Type &lhs, Type &rhs);
+ };
+ 
+ #include "tswap.f"

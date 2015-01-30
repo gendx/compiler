@@ -4,27 +4,36 @@ git clone http://git.code.sf.net/p/bobcat/code bobcat/
 git clone http://git.code.sf.net/p/flexcpp/code flexcpp/
 git clone http://git.code.sf.net/p/bisoncpp/code bisoncpp/
 
+cd bobcat
+git apply ../patches/bobcat.patch
+cd ..
+
+cd flexcpp
+git apply ../patches/flexcpp.patch
+cd ..
+
+cd bisoncpp
+git apply ../patches/bisoncpp.patch
+cd ..
+
+
 cd icmake/icmake
 ./icm_bootstrap /
 ./icm_install strip all
 cd ../..
 
 cp -f CLASSES.bobcat bobcat/bobcat/CLASSES
-cp -f patches/fswap bobcat/bobcat/fswap/fswap
 cd bobcat/bobcat
 echo "\n\n\n\n" | ./build libraries strip
 ./build install
 cd ../..
 
-cp -f patches/startconditions.h flexcpp/flexc++/startconditions/startconditions.h
-cp -f patches/scanner.h flexcpp/flexc++/scanner/scanner.h
 cd flexcpp/flexc++
 ./build program strip
 ./build install program
 ./build install skel
 cd ../..
 
-cp -f patches/bisonc++polymorphic.inline bisoncpp/bisonc++/skeletons/bisonc++polymorphic.inline
 cd bisoncpp/bisonc++
 ./build program strip
 ./build install program
@@ -32,4 +41,3 @@ cd bisoncpp/bisonc++
 cd ../..
 
 rm -Rf icmake bobcat flexcpp bisoncpp
-
