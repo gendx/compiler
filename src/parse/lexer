@@ -187,6 +187,10 @@ default {
     *d_val = matched();
     std::cerr << "lexer: POW" << std::endl;
     return Parser::POW; }
+"++"|"--" {
+    *d_val = matched();
+    std::cerr << "lexer: OP_UNARY" << std::endl;
+        return Parser::OP_UNARY; }
 "*"|"/"|"%" {
     *d_val = matched();
     std::cerr << "lexer: OP_FACTOR" << std::endl;

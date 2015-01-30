@@ -197,7 +197,8 @@ class Unary : public Expression
 public:
     enum UnOp {
         op_neg, op_not,
-        op_plus, op_minus
+        op_plus, op_minus,
+        op_incr, op_decr
     };
 
     inline Unary(const std::string& op, std::shared_ptr<Expression> expr) :

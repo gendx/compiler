@@ -35,6 +35,8 @@ Unary::UnOp Unary::strToOp(const std::string& s)
             {"!", op_not},
             {"+", op_plus},
             {"-", op_minus},
+            {"++", op_incr},
+            {"--", op_decr},
                                            }};
 
     auto found = m.find(s);
@@ -50,6 +52,8 @@ const std::string& Unary::opToStr(Unary::UnOp op)
             {op_not, "!"},
             {op_plus, "+"},
             {op_minus, "-"},
+            {op_incr, "++"},
+            {op_decr, "--"},
                                            }};
 
     auto&& found = m.find(op);
