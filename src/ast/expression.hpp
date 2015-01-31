@@ -39,7 +39,7 @@ public:
 class ExprList : public Expression
 {
 public:
-    inline ExprList() :
+    inline ExprList()
         {}
     inline ExprList(std::shared_ptr<Expression> e) :
         mExpressions{e} {}
