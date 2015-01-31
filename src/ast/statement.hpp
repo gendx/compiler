@@ -112,12 +112,12 @@ public:
 class Class : public Statement
 {
 public:
-    inline Class(std::shared_ptr<Identifier> name, std::shared_ptr<Block> block) :
+    inline Class(std::shared_ptr<Name> name, std::shared_ptr<Block> block) :
         mName(name), mBlock(block) {}
 
     void accept(Visitor& v);
 
-    std::shared_ptr<Identifier> mName;
+    std::shared_ptr<Name> mName;
     std::shared_ptr<Block> mBlock;
 };
 
@@ -126,12 +126,12 @@ public:
 class Concept : public Statement
 {
 public:
-    inline Concept(std::shared_ptr<Identifier> name, std::shared_ptr<Block> block) :
+    inline Concept(std::shared_ptr<Name> name, std::shared_ptr<Block> block) :
         mName(name), mBlock(block) {}
 
     void accept(Visitor& v);
 
-    std::shared_ptr<Identifier> mName;
+    std::shared_ptr<Name> mName;
     std::shared_ptr<Block> mBlock;
 };
 
@@ -181,12 +181,12 @@ public:
 class For : public Statement
 {
 public:
-    inline For(std::shared_ptr<Expression> variable, std::shared_ptr<Expression> range, std::shared_ptr<Block> block) :
+    inline For(std::shared_ptr<Identify> variable, std::shared_ptr<Expression> range, std::shared_ptr<Block> block) :
         mVariable(variable), mRange(range), mBlock(block) {}
 
     void accept(Visitor& v);
 
-    std::shared_ptr<Expression> mVariable;
+    std::shared_ptr<Identify> mVariable;
     std::shared_ptr<Expression> mRange;
     std::shared_ptr<Block> mBlock;
 };

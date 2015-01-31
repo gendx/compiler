@@ -118,24 +118,31 @@ default {
 
 // ******************** Basic data ********************
 [A-Za-z_][A-Za-z0-9_]* {
+    *d_val = matched();
     std::cerr << "lexer: IDENTIFIER" << std::endl;
     return Parser::IDENTIFIER; }
 0x[0-9A-Fa-f]+ {
+    *d_val = matched();
     std::cerr << "lexer: NUMBER" << std::endl;
     return Parser::NUMBER; }
 0b[01]+ {
+    *d_val = matched();
     std::cerr << "lexer: NUMBER" << std::endl;
     return Parser::NUMBER; }
 [+-]?[0-9]*\.[0-9]+e[+-]?[0-9]+ {
+    *d_val = matched();
     std::cerr << "lexer: NUMBER" << std::endl;
     return Parser::NUMBER; }
 [+-]?[0-9]+(\.[0-9]*)?e[+-]?[0-9]+ {
+    *d_val = matched();
     std::cerr << "lexer: NUMBER" << std::endl;
     return Parser::NUMBER; }
 [+-]?[0-9]*\.[0-9]+ {
+    *d_val = matched();
     std::cerr << "lexer: NUMBER" << std::endl;
     return Parser::NUMBER; }
 [+-]?[0-9]+(\.[0-9]*)? {
+    *d_val = matched();
     std::cerr << "lexer: NUMBER" << std::endl;
     return Parser::NUMBER; }
 
@@ -257,6 +264,7 @@ default {
 <CHAR> {
     \' {
         begin(StartCondition__::INITIAL);
+        *d_val = matched();
         std::cerr << "lexer: CHAR" << std::endl;
         return Parser::CHAR;
     }
@@ -266,6 +274,7 @@ default {
     }
     
     \n {
+        *d_val = matched();
         std::cerr << "lexer: ERR_CHAR" << std::endl;
         return Parser::ERR_CHAR;
     }
@@ -280,6 +289,7 @@ default {
 <STRING> {
     \" {
         begin(StartCondition__::INITIAL);
+        *d_val = matched();
         std::cerr << "lexer: STRING" << std::endl;
         return Parser::STRING;
     }
@@ -289,6 +299,7 @@ default {
     }
     
     \n {
+        *d_val = matched();
         std::cerr << "lexer: ERR_STRING" << std::endl;
         return Parser::ERR_STRING;
     }
@@ -409,6 +420,7 @@ default {
 
 // Unknown
 . {
+    *d_val = matched();
     std::cerr << "lexer: UNKNOWN_CHAR" << std::endl;
     return Parser::UNKNOWN_CHAR; }
 

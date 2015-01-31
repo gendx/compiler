@@ -73,7 +73,9 @@ void PrintCode::visit(DataChar& e)
 
 void PrintCode::visit(DataNumber& e)
 {
+    out << "(";
     out << e.mValue;
+    out << ")";
 }
 
 void PrintCode::visit(Identify& e)
@@ -85,7 +87,7 @@ void PrintCode::visit(Identify& e)
 
 void PrintCode::visit(Call& e)
 {
-    e.mIdentifier->accept(*this);
+    e.mExpression->accept(*this);
     out << "(";
     e.mArgs->accept(*this);
     out << ")";
@@ -98,18 +100,25 @@ void PrintCode::visit(Member& e)
     e.mMember->accept(*this);
 }
 
-void PrintCode::visit(Method& e)
+void PrintCode::visit(Name& e)
 {
-    e.mExpression->accept(*this);
-    out << ".";
-    e.mMethod->accept(*this);
+    e.mName->accept(*this);
+    if (e.mArgs)
+    {
+        out << "(";
+        e.mArgs->accept(*this);
+        out << ")";
+    }
 }
 
 void PrintCode::visit(Signature& e)
 {
     e.mType->accept(*this);
     out << " ";
-    e.mCall->accept(*this);
+    e.mIdentifier->accept(*this);
+    out << "(";
+    e.mArgs->accept(*this);
+    out << ")";
 }
 
 void PrintCode::visit(Index& e)

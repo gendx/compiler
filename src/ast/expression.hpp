@@ -39,7 +39,7 @@ public:
 class ExprList : public Expression
 {
 public:
-    inline ExprList()
+    inline ExprList() :
         {}
     inline ExprList(std::shared_ptr<Expression> e) :
         mExpressions{e} {}
@@ -125,12 +125,12 @@ public:
 class Call : public Expression
 {
 public:
-    inline Call(std::shared_ptr<Identifier> identifier, std::shared_ptr<ExprList> args) :
-        mIdentifier(identifier), mArgs(args) {}
+    inline Call(std::shared_ptr<Expression> expr, std::shared_ptr<ExprList> args) :
+        mExpression(expr), mArgs(args) {}
 
     void accept(Visitor& v);
 
-    std::shared_ptr<Identifier> mIdentifier;
+    std::shared_ptr<Expression> mExpression;
     std::shared_ptr<ExprList> mArgs;
 };
 
@@ -149,17 +149,19 @@ public:
 };
 
 
-/** Method **/
-class Method : public Expression
+/** Name **/
+class Name : public Expression
 {
 public:
-    inline Method(std::shared_ptr<Expression> expression, std::shared_ptr<Call> method) :
-        mExpression(expression), mMethod(method) {}
+    inline Name(std::shared_ptr<Identifier> name) :
+        mName(name) {}
+    inline Name(std::shared_ptr<Identifier> name, std::shared_ptr<ExprList> args) :
+        mName(name), mArgs(args) {}
 
     void accept(Visitor& v);
 
-    std::shared_ptr<Expression> mExpression;
-    std::shared_ptr<Call> mMethod;
+    std::shared_ptr<Identifier> mName;
+    std::shared_ptr<ExprList> mArgs;
 };
 
 
@@ -167,13 +169,14 @@ public:
 class Signature : public Expression
 {
 public:
-    inline Signature(std::shared_ptr<Expression> type, std::shared_ptr<Call> call) :
-        mType(type), mCall(call) {}
+    inline Signature(std::shared_ptr<Expression> type, std::shared_ptr<Identifier> identifier, std::shared_ptr<ExprList> args) :
+        mType(type), mIdentifier(identifier), mArgs(args) {}
 
     void accept(Visitor& v);
 
     std::shared_ptr<Expression> mType;
-    std::shared_ptr<Call> mCall;
+    std::shared_ptr<Identifier> mIdentifier;
+    std::shared_ptr<ExprList> mArgs;
 };
 
 

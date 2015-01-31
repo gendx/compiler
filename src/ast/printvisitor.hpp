@@ -36,7 +36,7 @@ public:
     void visit(Identify& e);
     void visit(Call& e);
     void visit(Member& e);
-    void visit(Method& e);
+    void visit(Name& e);
     void visit(Signature& e);
     void visit(Index& e);
     void visit(Unary& e);

@@ -65,7 +65,9 @@ void PrintVisitor::visit(DataChar& e)
 
 void PrintVisitor::visit(DataNumber& e)
 {
+    out << "(";
     out << e.mValue;
+    out << ")";
 }
 
 void PrintVisitor::visit(Identify& e)
@@ -79,10 +81,11 @@ void PrintVisitor::visit(Identify& e)
 
 void PrintVisitor::visit(Call& e)
 {
-    e.mIdentifier->accept(*this);
+    out << "(";
+    e.mExpression->accept(*this);
     out << "(";
     e.mArgs->accept(*this);
-    out << ")";
+    out << "))";
 }
 
 void PrintVisitor::visit(Member& e)
@@ -94,12 +97,16 @@ void PrintVisitor::visit(Member& e)
     out << ")";
 }
 
-void PrintVisitor::visit(Method& e)
+void PrintVisitor::visit(Name& e)
 {
     out << "(";
-    e.mExpression->accept(*this);
-    out << ".";
-    e.mMethod->accept(*this);
+    e.mName->accept(*this);
+    if (e.mArgs)
+    {
+        out << "(";
+        e.mArgs->accept(*this);
+        out << ")";
+    }
     out << ")";
 }
 
@@ -108,7 +115,10 @@ void PrintVisitor::visit(Signature& e)
     out << "(";
     e.mType->accept(*this);
     out << "#";
-    e.mCall->accept(*this);
+    e.mIdentifier->accept(*this);
+    out << "(";
+    e.mArgs->accept(*this);
+    out << ")";
     out << ")";
 }
 

@@ -30,13 +30,13 @@ public:
     int underflow();
 
 private:
-    int useBuf;
-    std::streambuf* sbuf_[2];
-    char buffer_[1024];
+    int mCurrentBuf;
+    std::streambuf* mStreamBufs[2];
+    char mCharBuf[1024];
 };
 
 inline ConcatStreamBuf::ConcatStreamBuf(std::istream& sbuf1, std::istream& sbuf2) :
-    useBuf(0), sbuf_{sbuf1.rdbuf(), sbuf2.rdbuf()}
+    mCurrentBuf(0), mStreamBufs{sbuf1.rdbuf(), sbuf2.rdbuf()}
 {
 }
 

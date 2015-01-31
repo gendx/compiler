@@ -186,7 +186,7 @@ void Member::accept(Visitor& v)
 {
     v.visit(*this);
 }
-void Method::accept(Visitor& v)
+void Name::accept(Visitor& v)
 {
     v.visit(*this);
 }

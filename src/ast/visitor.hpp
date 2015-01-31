@@ -36,7 +36,7 @@ public:
     virtual void visit(Identify& e) = 0;
     virtual void visit(Call& e) = 0;
     virtual void visit(Member& e) = 0;
-    virtual void visit(Method& e) = 0;
+    virtual void visit(Name& e) = 0;
     virtual void visit(Signature& e) = 0;
     virtual void visit(Index& e) = 0;
     virtual void visit(Unary& e) = 0;

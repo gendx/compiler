@@ -20,23 +20,23 @@
 
 int ConcatStreamBuf::underflow()
 {
-    if (this->gptr() == this->egptr())
+    if (gptr() == egptr())
     {
         std::streamsize size = 0;
-        while (useBuf < 2)
+        while (mCurrentBuf < 2)
         {
-            size = this->sbuf_[useBuf]->sgetn(this->buffer_, sizeof this->buffer_);
+            size = mStreamBufs[mCurrentBuf]->sgetn(mCharBuf, sizeof mCharBuf);
             if (!size)
-                useBuf++;
+                mCurrentBuf++;
             else
                 break;
         }
-        this->setg(this->buffer_, this->buffer_, this->buffer_ + size);
+        setg(mCharBuf, mCharBuf, mCharBuf + size);
     }
 
-    return this->gptr() == this->egptr()
+    return gptr() == egptr()
          ? std::char_traits<char>::eof()
-         : std::char_traits<char>::to_int_type(*this->gptr());
+         : std::char_traits<char>::to_int_type(*gptr());
 }
 
 
