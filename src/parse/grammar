@@ -20,7 +20,8 @@
 %scanner-token-function d_scanner.lex()
 
 //%debug
-%error-verbose
+//%error-verbose
+%print-tokens
 
 %baseclass-preinclude ParserPreinclude.h
 
@@ -36,9 +37,9 @@
     IF: std::shared_ptr<If>;
     SWITCH: std::shared_ptr<Switch>;
     MATCH: std::shared_ptr<Match>;
-    STR: std::string;
+    TOK: Token;
 
-%type <EXP> expr number char string
+%type <EXP> expr lexical_error number char string
 %type <EXPLIST> anylist list
 %type <IDENT> identifier
 %type <IDENTIFY> identify
@@ -51,27 +52,28 @@
 %type <MATCH> withstmts
 
 // lowest precedence first, highest precedence last
-%token <STR> IDENTIFIER NUMBER CHAR STRING
-%token <STR> EOL INDENT DEDENT
-%token <STR> ERR_CHAR ERR_STRING ERR_INDENT UNKNOWN_CHAR
-%token <STR> CLASS CONCEPT DEF
-%token <STR> RETURN BREAK CONTINUE PASS
-%token <STR> FOREVER WHILE FOR IN
-%token <STR> IF ELSE ELIF SWITCH CASE MATCH WITH AS DEFAULT
-%right <STR> OP_ASSIGN
-%left <STR> RANGE
-%left <STR> COND_OR
-%left <STR> COND_AND
-%left <STR> OP_COMPARE
-%left <STR> OR
-%left <STR> XOR
-%left <STR> AND
-%left <STR> OP_SHIFT
-%left <STR> OP_TERM
-%left <STR> OP_FACTOR
-%right <STR> POW
-%right <STR> OP_UNARY
-%left <STR> LEFT_PAR RIGHT_PAR LEFT_BRACKET RIGHT_BRACKET COMMA DOT
+%token <TOK> IDENTIFIER NUMBER CHAR STRING
+%token <TOK> EOL INDENT DEDENT
+%token <TOK> ERR_INDENT
+%token <TOK> ERR_CHAR ERR_STRING UNKNOWN_CHAR
+%token <TOK> CLASS CONCEPT DEF
+%token <TOK> RETURN BREAK CONTINUE PASS
+%token <TOK> FOREVER WHILE FOR IN
+%token <TOK> IF ELSE ELIF SWITCH CASE MATCH WITH AS DEFAULT
+%right <TOK> OP_ASSIGN
+%left <TOK> RANGE
+%left <TOK> COND_OR
+%left <TOK> COND_AND
+%left <TOK> OP_COMPARE
+%left <TOK> OR
+%left <TOK> XOR
+%left <TOK> AND
+%left <TOK> OP_SHIFT
+%left <TOK> OP_TERM
+%left <TOK> OP_FACTOR
+%right <TOK> POW
+%right <TOK> OP_UNARY
+%left <TOK> LEFT_PAR RIGHT_PAR LEFT_BRACKET RIGHT_BRACKET COMMA DOT
 
 
 %%
@@ -94,15 +96,22 @@ stmts:
         if ($2)
             $$->append($2);
     }
+|   error EOF {
+        mAst.setErrorSymbol(symbol__(d_token_lastError));
+
+        SR__* begin = s_state[d_state_lastError];
+        SR__* end = begin + begin->d_lastIdx;
+
+        for (SR__* iter = begin + 1 ; iter != end ; ++iter)
+            mAst.addErrorExpectedSymbol(symbol__(iter->d_token));
+
+        ABORT();
+    }
 ;
 
 stmt:
     expr EOL {
         $$ = std::make_shared<ExprStmt>($1);
-    }
-|   error EOL {
-        std::cout << "error inside statement" << std::endl;
-        $$ = nullptr;
     }
 |   RETURN expr EOL {
         $$ = std::make_shared<Return>($2);
@@ -252,7 +261,10 @@ signature:
 ;
 
 expr:
-    identifier {
+    lexical_error {
+        $$ = $1;
+    }
+|   identifier {
         $$ = $1;
     }
 |   number {
@@ -323,6 +335,22 @@ expr:
     }
 |   OP_TERM expr %prec OP_UNARY {
         $$ = std::make_shared<Unary>($1, $2);
+    }
+;
+
+
+lexical_error:
+    ERR_CHAR {
+        std::cerr << "Error inside char :" << $1 << std::endl;
+        $$ = std::make_shared<LexicalError>($1);
+    }
+|   ERR_STRING {
+        std::cerr << "Error inside string :" << $1 << std::endl;
+        $$ = std::make_shared<LexicalError>($1);
+    }
+|   UNKNOWN_CHAR {
+        std::cerr << "Unknown char :" << $1 << std::endl;
+        $$ = std::make_shared<LexicalError>($1);
     }
 ;
 

@@ -16,19 +16,15 @@
     along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.txt
 */
 
-#include "parse/Parser.h"
-#include "ast/printvisitor.hpp"
-#include "ast/printcode.hpp"
+#include "syntaxerror.hpp"
 
-int main()
+std::ostream& operator<<(std::ostream& out, const SyntaxError& error)
 {
-    Parser parser;
-    parser.parse();
-    AST ast = parser.ast();
+    out << "Syntax error : unexpected token " << error.mSymbol << " (in state " << error.mParserState << ")" << std::endl;
+    out << "Expected tokens :";
 
-    if (ast.printErrors(std::cerr))
-        return 1;
-
-    PrintVisitor::print(std::cout, ast);
-    PrintCode::print(std::cout, ast);
+    for (const std::string& t : error.mExpectedTokens)
+        out << t << ",";
+    out << std::endl;
+    out << error.mToken << std::endl;
 }

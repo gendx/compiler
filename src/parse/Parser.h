@@ -58,6 +58,8 @@ class Parser: public ParserBase
         void exceptionHandler__(std::exception const &exc);
 
         AST mAst;
+        int    d_token_lastError;
+        size_t d_state_lastError;
 };
 
 

@@ -27,6 +27,7 @@ class PrintVisitor : public Visitor
 public:
     static void print(std::ostream& s, AST& ast);
 
+    void visit(LexicalError& e);
     void visit(ExprList& e);
     void visit(Identifier& e);
     void visit(Data& e);

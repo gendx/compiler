@@ -31,6 +31,11 @@ PrintVisitor::PrintVisitor(std::ostream& s) :
     out(s) {}
 
 
+void PrintVisitor::visit(LexicalError&)
+{
+    out << "<lexical error>";
+}
+
 void PrintVisitor::visit(ExprList& e)
 {
     bool begin = false;
@@ -45,28 +50,28 @@ void PrintVisitor::visit(ExprList& e)
 
 void PrintVisitor::visit(Identifier& e)
 {
-    out << e.mName;
+    out << e.token();
 }
 
 void PrintVisitor::visit(Data& e)
 {
-    out << e.mValue;
+    out << e.token();
 }
 
 void PrintVisitor::visit(DataString& e)
 {
-    out << e.mValue;
+    out << e.token();
 }
 
 void PrintVisitor::visit(DataChar& e)
 {
-    out << e.mValue;
+    out << e.token();
 }
 
 void PrintVisitor::visit(DataNumber& e)
 {
     out << "(";
-    out << e.mValue;
+    out << e.token();
     out << ")";
 }
 

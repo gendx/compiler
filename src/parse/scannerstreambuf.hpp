@@ -16,30 +16,34 @@
     along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.txt
 */
 
-#include "ast.hpp"
+#ifndef SCANNERSTREAMBUF_HPP
+#define SCANNERSTREAMBUF_HPP
 
-AST::AST()
+#include <iostream>
+#include <memory>
+#include "token.hpp"
+
+class ScannerStreambuf : public std::streambuf
 {
-}
+public:
+    inline ScannerStreambuf(std::istream& in);
 
-AST::AST(std::shared_ptr<Block> root) :
-    mRoot(root)
-{
-}
+    int underflow();
 
+    Token makeToken(const std::string& token, int lineNr) const;
+    Token makeToken(unsigned int size, int lineNr) const;
+    Token makeEOLToken(int lineNr) const;
 
-void AST::visit(Visitor& v)
-{
-    mRoot->accept(v);
-}
+private:
+    std::istream& mIn;
+    std::string mLine;
+    std::shared_ptr<std::string> mSharedLine;
+    std::shared_ptr<std::string> mLastLine;
+    int mColumn;
+    char mChar;
+};
 
+inline ScannerStreambuf::ScannerStreambuf(std::istream& in) :
+    mIn(in), mSharedLine(std::make_shared<std::string>()), mColumn(0), mChar(0) {setg(nullptr, nullptr, nullptr);}
 
-bool AST::printErrors(std::ostream& out) const
-{
-    if (mSyntaxError)
-    {
-        out << *mSyntaxError;
-        return true;
-    }
-    return false;
-}
+#endif // SCANNERSTREAMBUF_HPP

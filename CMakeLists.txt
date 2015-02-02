@@ -13,9 +13,12 @@ ADD_EXECUTABLE(
     src/ast/printcode.cpp
     src/ast/printvisitor.cpp
     src/ast/statement.cpp
+    src/ast/syntaxerror.cpp
     src/ast/visitor.cpp
     src/parse/concatstream.cpp
     src/parse/lex.cc
     src/parse/parse.cc
+    src/parse/scannerstreambuf.cpp
+    src/parse/token.cpp
 )
 

@@ -25,16 +25,19 @@
 #include "Scannerbase.h"
 
 #include <stack>
+#include "scannerstreambuf.hpp"
+#include "token.hpp"
 
 
 // $insert classHead
-class Scanner: public ScannerBase
+class Scanner: private ScannerStreambuf, private std::istream,
+               public ScannerBase
 {
     public:
         explicit Scanner(std::istream &in = std::cin,
                                 std::ostream &out = std::cout);
 
-        Scanner(std::string const &infile, std::string const &outfile);
+        inline Token token();
         
         // $insert lexFunctionDecl
         int lex();
@@ -53,20 +56,46 @@ class Scanner: public ScannerBase
                             // re-implement this function for code that must 
                             // be exec'ed after the rules's actions.
 
+        inline Token makeToken();
+        inline Token makeIndentToken(unsigned int indent);
+        inline Token makeEOLToken();
+
         std::stack<unsigned int> mIndentLevels;
+        Token mToken;
+        Token mIndentToken;
+        bool mIsDedent;
+
         Parser::STYPE__* d_val;
 };
 
 // $insert scannerConstructors
 inline Scanner::Scanner(std::istream &in, std::ostream &out)
 :
-    ScannerBase(in, out)
+    ScannerStreambuf(in),
+    std::istream(this),
+    ScannerBase(*this, out),
+    mIsDedent(false)
 {}
 
-inline Scanner::Scanner(std::string const &infile, std::string const &outfile)
-:
-    ScannerBase(infile, outfile)
-{}
+inline Token Scanner::token()
+{
+    return mToken;
+}
+
+inline Token Scanner::makeToken()
+{
+    return mToken = ScannerStreambuf::makeToken(matched(), lineNr());
+}
+
+inline Token Scanner::makeIndentToken(unsigned int indent)
+{
+    return ScannerStreambuf::makeToken(indent, lineNr());
+}
+
+inline Token Scanner::makeEOLToken()
+{
+    return ScannerStreambuf::makeEOLToken(lineNr());
+}
 
 // $insert inlineLexFunction
 inline int Scanner::lex()

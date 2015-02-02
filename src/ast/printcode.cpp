@@ -39,6 +39,11 @@ void PrintCode::endl()
 }
 
 
+void PrintCode::visit(LexicalError&)
+{
+    out << "<lexical error>";
+}
+
 void PrintCode::visit(ExprList& e)
 {
     bool begin = false;
@@ -53,28 +58,28 @@ void PrintCode::visit(ExprList& e)
 
 void PrintCode::visit(Identifier& e)
 {
-    out << e.mName;
+    out << e.token();
 }
 
 void PrintCode::visit(Data& e)
 {
-    out << e.mValue;
+    out << e.token();
 }
 
 void PrintCode::visit(DataString& e)
 {
-    out << e.mValue;
+    out << e.token();
 }
 
 void PrintCode::visit(DataChar& e)
 {
-    out << e.mValue;
+    out << e.token();
 }
 
 void PrintCode::visit(DataNumber& e)
 {
     out << "(";
-    out << e.mValue;
+    out << e.token();
     out << ")";
 }
 

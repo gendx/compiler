@@ -150,6 +150,10 @@ const std::string& Binary::opToStr(Binary::BinOp op)
 }
 
 
+void LexicalError::accept(Visitor& v)
+{
+    v.visit(*this);
+}
 void ExprList::accept(Visitor& v)
 {
     v.visit(*this);

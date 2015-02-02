@@ -27,6 +27,7 @@ class Visitor
 public:
     virtual ~Visitor();
 
+    virtual void visit(LexicalError& e) = 0;
     virtual void visit(ExprList& e) = 0;
     virtual void visit(Identifier& e) = 0;
     virtual void visit(Data& e) = 0;

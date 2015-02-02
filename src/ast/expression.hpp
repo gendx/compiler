@@ -19,19 +19,32 @@
 #ifndef EXPRESSION_HPP
 #define EXPRESSION_HPP
 
-#include <memory>
 #include <vector>
-#include <string>
+#include "../parse/token.hpp"
 
 class Visitor;
 
 /** Expression **/
-class Expression
+class Expression : public Token
 {
 public:
     virtual ~Expression();
 
     virtual void accept(Visitor& v) = 0;
+
+protected:
+    using Token::Token;
+};
+
+
+/** LexicalError **/
+class LexicalError : public Expression
+{
+public:
+    inline LexicalError(const Token& t) :
+        Expression{t} {}
+
+    void accept(Visitor& v);
 };
 
 
@@ -39,13 +52,13 @@ public:
 class ExprList : public Expression
 {
 public:
-    inline ExprList()
-        {}
+    inline ExprList() :
+        Expression{} {}
     inline ExprList(std::shared_ptr<Expression> e) :
-        mExpressions{e} {}
+        Expression{*e}, mExpressions{e} {}
 
     inline void append(std::shared_ptr<Expression> e)
-        {mExpressions.push_back(e);}
+        {appendToken(*e); mExpressions.push_back(e);}
 
     void accept(Visitor& v);
 
@@ -57,12 +70,10 @@ public:
 class Identifier : public Expression
 {
 public:
-    inline Identifier(const std::string& name) :
-        mName(name) {}
+    inline Identifier(const Token& name) :
+        Expression{name} {}
 
     void accept(Visitor& v);
-
-    std::string mName;
 };
 
 
@@ -70,19 +81,17 @@ public:
 class Data : public Expression
 {
 public:
-    inline Data(const std::string& value) :
-        mValue(value) {}
+    inline Data(const Token& value) :
+        Expression{value} {}
 
     void accept(Visitor& v);
-
-    std::string mValue;
 };
 
 
 class DataString : public Data
 {
 public:
-    inline DataString(const std::string& value) :
+    inline DataString(const Token& value) :
         Data(value) {}
 
     void accept(Visitor& v);
@@ -91,7 +100,7 @@ public:
 class DataChar : public Data
 {
 public:
-    inline DataChar(const std::string& value) :
+    inline DataChar(const Token& value) :
         Data(value) {}
 
     void accept(Visitor& v);
@@ -100,7 +109,7 @@ public:
 class DataNumber : public Data
 {
 public:
-    inline DataNumber(const std::string& value) :
+    inline DataNumber(const Token& value) :
         Data(value) {}
 
     void accept(Visitor& v);
@@ -112,7 +121,7 @@ class Identify : public Expression
 {
 public:
     inline Identify(std::shared_ptr<Expression> type, std::shared_ptr<Identifier> identifier) :
-        mType(type), mIdentifier(identifier) {}
+        Expression{*type, *identifier}, mType(type), mIdentifier(identifier) {}
 
     void accept(Visitor& v);
 
@@ -126,7 +135,7 @@ class Call : public Expression
 {
 public:
     inline Call(std::shared_ptr<Expression> expr, std::shared_ptr<ExprList> args) :
-        mExpression(expr), mArgs(args) {}
+        Expression{*expr, *args}, mExpression(expr), mArgs(args) {}
 
     void accept(Visitor& v);
 
@@ -140,7 +149,7 @@ class Member : public Expression
 {
 public:
     inline Member(std::shared_ptr<Expression> expression, std::shared_ptr<Identifier> member) :
-        mExpression(expression), mMember(member) {}
+        Expression{*expression, *member}, mExpression(expression), mMember(member) {}
 
     void accept(Visitor& v);
 
@@ -154,9 +163,9 @@ class Name : public Expression
 {
 public:
     inline Name(std::shared_ptr<Identifier> name) :
-        mName(name) {}
+        Expression{*name}, mName(name) {}
     inline Name(std::shared_ptr<Identifier> name, std::shared_ptr<ExprList> args) :
-        mName(name), mArgs(args) {}
+        Expression{*name, *args}, mName(name), mArgs(args) {}
 
     void accept(Visitor& v);
 
@@ -170,7 +179,7 @@ class Signature : public Expression
 {
 public:
     inline Signature(std::shared_ptr<Expression> type, std::shared_ptr<Identifier> identifier, std::shared_ptr<ExprList> args) :
-        mType(type), mIdentifier(identifier), mArgs(args) {}
+        Expression{*type, *identifier, *args}, mType(type), mIdentifier(identifier), mArgs(args) {}
 
     void accept(Visitor& v);
 
@@ -185,7 +194,7 @@ class Index : public Expression
 {
 public:
     inline Index(std::shared_ptr<Expression> expr, std::shared_ptr<ExprList> args) :
-        mExpression(expr), mArgs(args) {}
+        Expression{*expr, *args}, mExpression(expr), mArgs(args) {}
 
     void accept(Visitor& v);
 
@@ -204,8 +213,8 @@ public:
         op_incr, op_decr
     };
 
-    inline Unary(const std::string& op, std::shared_ptr<Expression> expr) :
-        mArg(expr), mOperator(strToOp(op)) {}
+    inline Unary(const Token& op, std::shared_ptr<Expression> expr) :
+        Expression{op, *expr}, mArg(expr), mOperator(strToOp(op.token())) {}
 
     void accept(Visitor& v);
 
@@ -240,8 +249,8 @@ public:
         op_assign
     };
 
-    inline Binary(std::shared_ptr<Expression> lhs, const std::string& op, std::shared_ptr<Expression> rhs) :
-        mLhs(lhs), mRhs(rhs), mOperator(strToOp(op)) {}
+    inline Binary(std::shared_ptr<Expression> lhs, const Token& op, std::shared_ptr<Expression> rhs) :
+        Expression{*lhs, op, *rhs}, mLhs(lhs), mRhs(rhs), mOperator(strToOp(op.token())) {}
 
     void accept(Visitor& v);
 
