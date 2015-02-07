@@ -33,7 +33,7 @@ public:
     inline Token(const std::string& token, std::shared_ptr<std::string> line, int lineNr, int column);
 
     inline operator bool() const;
-    inline const std::string token() const;
+    inline const std::string& token() const;
 
     void appendToken(const Token& other);
 
@@ -56,7 +56,7 @@ inline Token::Token(const std::string& token, std::shared_ptr<std::string> line,
 
 inline Token::operator bool() const
     {return (bool)mLine;}
-inline const std::string Token::token() const
+inline const std::string& Token::token() const
     {return mToken;}
 
 #endif // TOKEN_HPP

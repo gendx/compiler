@@ -58,6 +58,10 @@ public:
     virtual void visit(If& s) = 0;
     virtual void visit(Switch& s) = 0;
     virtual void visit(Match& s) = 0;
+
+    virtual void visit(DecorationType& d) = 0;
+    virtual void visit(DecorationFunction& d) = 0;
+    virtual void visit(DecorationVariable& d) = 0;
 };
 
 #endif // VISITOR_HPP

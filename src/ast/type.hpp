@@ -16,26 +16,21 @@
     along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.txt
 */
 
-#include "ast.hpp"
+#ifndef TYPE_HPP
+#define TYPE_HPP
 
-AST::AST(std::shared_ptr<Block> root) :
-    mRoot(root)
+#include <memory>
+
+class Class;
+
+class Type
 {
-}
+public:
+    Type(std::weak_ptr<Class> definition) :
+        mDefinition(definition) {}
 
+private:
+    std::weak_ptr<Class> mDefinition;
+};
 
-void AST::visit(Visitor& v)
-{
-    mRoot->accept(v);
-}
-
-
-bool AST::printErrors(std::ostream& out) const
-{
-    if (mSyntaxError)
-    {
-        out << *mSyntaxError;
-        return true;
-    }
-    return false;
-}
+#endif // TYPE_HPP

@@ -27,4 +27,5 @@ std::ostream& operator<<(std::ostream& out, const SyntaxError& error)
         out << t << ",";
     out << std::endl;
     out << error.mToken << std::endl;
+    return out;
 }

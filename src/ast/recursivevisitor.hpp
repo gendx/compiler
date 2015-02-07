@@ -16,17 +16,14 @@
     along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.txt
 */
 
-#ifndef PRINTCODE_HPP
-#define PRINTCODE_HPP
+#ifndef RECURSIVEVISITOR_HPP
+#define RECURSIVEVISITOR_HPP
 
-#include "recursivevisitor.hpp"
-#include "ast.hpp"
+#include "visitor.hpp"
 
-class PrintCode : public RecursiveVisitor
+class RecursiveVisitor : public Visitor
 {
 public:
-    static void print(std::ostream& s, AST& ast, bool colorize);
-
     void visit(LexicalError& e);
     void visit(ExprList& e);
     void visit(Identifier& e);
@@ -62,16 +59,6 @@ public:
     void visit(DecorationType& d);
     void visit(DecorationFunction& d);
     void visit(DecorationVariable& d);
-
-private:
-    PrintCode(std::ostream& s, bool colorize);
-
-    void endl();
-    void keyword(const std::string& word);
-
-    std::ostream& out;
-    int indent;
-    bool mColorize;
 };
 
-#endif // PRINTCODE_HPP
+#endif // RECURSIVEVISITOR_HPP

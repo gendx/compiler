@@ -19,8 +19,9 @@
 #ifndef STATEMENT_HPP
 #define STATEMENT_HPP
 
-#include "expression.hpp"
 #include <algorithm>
+#include "expression.hpp"
+#include "scope.hpp"
 
 class Visitor;
 
@@ -64,7 +65,7 @@ public:
 class Break : public Statement
 {
 public:
-    inline Break() {}
+    Break() = default;
 
     void accept(Visitor& v);
 };
@@ -74,7 +75,7 @@ public:
 class Continue : public Statement
 {
 public:
-    inline Continue() {}
+    Continue() = default;
 
     void accept(Visitor& v);
 };
@@ -84,7 +85,7 @@ public:
 class Pass : public Statement
 {
 public:
-    inline Pass() {}
+    Pass() = default;
 
     void accept(Visitor& v);
 };
@@ -94,8 +95,7 @@ public:
 class Block : public Statement
 {
 public:
-    inline Block()
-        {}
+    Block() = default;
 
     inline void append(std::shared_ptr<Statement> s)
         {mStatements.push_back(s);}
@@ -105,11 +105,14 @@ public:
     void accept(Visitor& v);
 
     std::vector<std::shared_ptr<Statement> > mStatements;
+
+    // Semantic.
+    std::shared_ptr<Scope> mScope;
 };
 
 
 /** Class **/
-class Class : public Statement
+class Class : public Statement, public std::enable_shared_from_this<Class>
 {
 public:
     inline Class(std::shared_ptr<Name> name, std::shared_ptr<Block> block) :
@@ -137,7 +140,7 @@ public:
 
 
 /** Function **/
-class Function : public Statement
+class Function : public Statement, public std::enable_shared_from_this<Function>
 {
 public:
     inline Function(std::shared_ptr<Signature> signature, std::shared_ptr<Block> block) :
@@ -196,8 +199,7 @@ public:
 class If : public Statement
 {
 public:
-    inline If()
-        {}
+    If() = default;
     inline If(std::shared_ptr<Block> _else) :
         mElse(_else) {}
 
@@ -217,8 +219,7 @@ public:
 class Switch : public Statement
 {
 public:
-    inline Switch()
-        {}
+    Switch() = default;
     inline Switch(std::shared_ptr<Block> _default) :
         mDefault(_default) {}
 
@@ -242,8 +243,7 @@ public:
 class Match : public Statement
 {
 public:
-    inline Match()
-        {}
+    Match() = default;
 
     inline void setExpr(std::shared_ptr<Expression> expression)
         {mExpression = expression;}

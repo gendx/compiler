@@ -21,6 +21,7 @@
 
 #include <vector>
 #include "../parse/token.hpp"
+#include "decoration.hpp"
 
 class Visitor;
 
@@ -52,8 +53,7 @@ public:
 class ExprList : public Expression
 {
 public:
-    inline ExprList() :
-        Expression{} {}
+    ExprList() = default;
     inline ExprList(std::shared_ptr<Expression> e) :
         Expression{*e}, mExpressions{e} {}
 
@@ -74,6 +74,9 @@ public:
         Expression{name} {}
 
     void accept(Visitor& v);
+
+    // Semantic.
+    std::shared_ptr<Decoration> mDecoration;
 };
 
 
@@ -117,7 +120,7 @@ public:
 
 
 /** Identify **/
-class Identify : public Expression
+class Identify : public Expression, public std::enable_shared_from_this<Identify>
 {
 public:
     inline Identify(std::shared_ptr<Expression> type, std::shared_ptr<Identifier> identifier) :

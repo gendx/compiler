@@ -31,6 +31,22 @@ PrintVisitor::PrintVisitor(std::ostream& s) :
     out(s) {}
 
 
+void PrintVisitor::visit(DecorationType&)
+{
+    out << "<type>";
+}
+
+void PrintVisitor::visit(DecorationFunction&)
+{
+    out << "<function>";
+}
+
+void PrintVisitor::visit(DecorationVariable&)
+{
+    out << "<variable>";
+}
+
+
 void PrintVisitor::visit(LexicalError&)
 {
     out << "<lexical error>";
@@ -50,7 +66,12 @@ void PrintVisitor::visit(ExprList& e)
 
 void PrintVisitor::visit(Identifier& e)
 {
-    out << e.token();
+    out << "(" << e.token() << " $ ";
+    if (e.mDecoration)
+        e.mDecoration->accept(*this);
+    else
+        out << "<undeclared>";
+    out << ")";
 }
 
 void PrintVisitor::visit(Data& e)
@@ -153,11 +174,6 @@ void PrintVisitor::visit(Binary& e)
 }
 
 
-void PrintVisitor::visit(ExprStmt& s)
-{
-    s.mExpression->accept(*this);
-}
-
 void PrintVisitor::visit(Return& s)
 {
     out << "return(";
@@ -165,17 +181,17 @@ void PrintVisitor::visit(Return& s)
     out << ")";
 }
 
-void PrintVisitor::visit(Break& s)
+void PrintVisitor::visit(Break&)
 {
     out << "break";
 }
 
-void PrintVisitor::visit(Continue& s)
+void PrintVisitor::visit(Continue&)
 {
     out << "continue";
 }
 
-void PrintVisitor::visit(Pass& s)
+void PrintVisitor::visit(Pass&)
 {
     out << "pass";
 }

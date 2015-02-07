@@ -16,26 +16,4 @@
     along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.txt
 */
 
-#include "ast.hpp"
-
-AST::AST(std::shared_ptr<Block> root) :
-    mRoot(root)
-{
-}
-
-
-void AST::visit(Visitor& v)
-{
-    mRoot->accept(v);
-}
-
-
-bool AST::printErrors(std::ostream& out) const
-{
-    if (mSyntaxError)
-    {
-        out << *mSyntaxError;
-        return true;
-    }
-    return false;
-}
+#include "type.hpp"

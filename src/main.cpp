@@ -19,6 +19,7 @@
 #include "parse/Parser.h"
 #include "ast/printvisitor.hpp"
 #include "ast/printcode.hpp"
+#include "ast/scopevisitor.hpp"
 
 int main()
 {
@@ -29,6 +30,7 @@ int main()
     if (ast.printErrors(std::cerr))
         return 1;
 
-    PrintVisitor::print(std::cout, ast);
-    PrintCode::print(std::cout, ast);
+    ScopeVisitor::visit(ast);
+    PrintVisitor::print(std::cerr, ast);
+    PrintCode::print(std::cout, ast, true);
 }

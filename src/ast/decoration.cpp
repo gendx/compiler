@@ -16,26 +16,24 @@
     along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.txt
 */
 
-#include "ast.hpp"
+#include "decoration.hpp"
 
-AST::AST(std::shared_ptr<Block> root) :
-    mRoot(root)
+#include "visitor.hpp"
+
+Decoration::~Decoration()
 {
 }
 
 
-void AST::visit(Visitor& v)
+void DecorationType::accept(Visitor& v)
 {
-    mRoot->accept(v);
+    v.visit(*this);
 }
-
-
-bool AST::printErrors(std::ostream& out) const
+void DecorationFunction::accept(Visitor& v)
 {
-    if (mSyntaxError)
-    {
-        out << *mSyntaxError;
-        return true;
-    }
-    return false;
+    v.visit(*this);
+}
+void DecorationVariable::accept(Visitor& v)
+{
+    v.visit(*this);
 }

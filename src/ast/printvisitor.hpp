@@ -19,10 +19,10 @@
 #ifndef PRINTVISITOR_HPP
 #define PRINTVISITOR_HPP
 
-#include "visitor.hpp"
+#include "recursivevisitor.hpp"
 #include "ast.hpp"
 
-class PrintVisitor : public Visitor
+class PrintVisitor : public RecursiveVisitor
 {
 public:
     static void print(std::ostream& s, AST& ast);
@@ -43,7 +43,6 @@ public:
     void visit(Unary& e);
     void visit(Binary& e);
 
-    void visit(ExprStmt& s);
     void visit(Return& s);
     void visit(Break& s);
     void visit(Continue& s);
@@ -58,6 +57,10 @@ public:
     void visit(If& s);
     void visit(Switch& s);
     void visit(Match& s);
+
+    void visit(DecorationType& d);
+    void visit(DecorationFunction& d);
+    void visit(DecorationVariable& d);
 
 private:
     PrintVisitor(std::ostream& s);

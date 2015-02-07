@@ -16,26 +16,30 @@
     along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.txt
 */
 
-#include "ast.hpp"
+#ifndef SCOPE_HPP
+#define SCOPE_HPP
 
-AST::AST(std::shared_ptr<Block> root) :
-    mRoot(root)
+#include <unordered_map>
+#include "decoration.hpp"
+
+class Identify;
+
+class Scope
 {
-}
+public:
+    Scope() = default;
+    Scope(std::shared_ptr<Scope> parent);
 
+    std::shared_ptr<Decoration> lookup(const std::string& name) const;
+    void set(const std::string& name, std::weak_ptr<Class> c);
+    void set(const std::string& name, std::weak_ptr<Function> f);
+    void set(const std::string& name, std::weak_ptr<Identify> i);
 
-void AST::visit(Visitor& v)
-{
-    mRoot->accept(v);
-}
+private:
+    std::shared_ptr<Scope> mParent;
+    std::unordered_map<std::string, std::weak_ptr<Class> > mClasses;
+    std::unordered_map<std::string, std::weak_ptr<Function> > mFunctions;
+    std::unordered_map<std::string, std::weak_ptr<Identify> > mVariables;
+};
 
-
-bool AST::printErrors(std::ostream& out) const
-{
-    if (mSyntaxError)
-    {
-        out << *mSyntaxError;
-        return true;
-    }
-    return false;
-}
+#endif // SCOPE_HPP

@@ -17,25 +17,47 @@
 */
 
 #include "printcode.hpp"
+#include "../misc/colorizer.hpp"
 
 #include <ostream>
 
-void PrintCode::print(std::ostream& s, AST& ast)
+void PrintCode::print(std::ostream& s, AST& ast, bool colorize)
 {
-    PrintCode v(s);
+    PrintCode v(s, colorize);
     ast.visit(v);
     s << std::endl;
 }
 
-PrintCode::PrintCode(std::ostream& s) :
-    out(s), indent(-1) {}
+PrintCode::PrintCode(std::ostream& s, bool colorize) :
+    out(s), indent(-1), mColorize(colorize) {}
 
 
 void PrintCode::endl()
 {
     out << std::endl;
-    for (unsigned int i = 0 ; i < indent ; ++i)
+    for (int i = 0 ; i < indent ; ++i)
         out << "    ";
+}
+
+void PrintCode::keyword(const std::string& word)
+{
+    out << Colorizer(mColorize).bold().fg(Colorizer::blue) << word << Colorizer(mColorize).rst();
+}
+
+
+void PrintCode::visit(DecorationType&)
+{
+    out << Colorizer(mColorize).bold().fg(Colorizer::cyan);
+}
+
+void PrintCode::visit(DecorationFunction&)
+{
+    out << Colorizer(mColorize).bold().fg(Colorizer::red);
+}
+
+void PrintCode::visit(DecorationVariable&)
+{
+    out << Colorizer(mColorize).bold().fg(Colorizer::green);
 }
 
 
@@ -58,7 +80,12 @@ void PrintCode::visit(ExprList& e)
 
 void PrintCode::visit(Identifier& e)
 {
+    if (e.mDecoration)
+        e.mDecoration->accept(*this);
+    else
+        out << Colorizer(mColorize).under();
     out << e.token();
+    out << Colorizer(mColorize).rst();
 }
 
 void PrintCode::visit(Data& e)
@@ -160,26 +187,27 @@ void PrintCode::visit(ExprStmt& s)
 void PrintCode::visit(Return& s)
 {
     this->endl();
-    out << "return ";
+    this->keyword("return");
+    out << " ";
     s.mExpression->accept(*this);
 }
 
-void PrintCode::visit(Break& s)
+void PrintCode::visit(Break&)
 {
     this->endl();
-    out << "break";
+    this->keyword("break");
 }
 
-void PrintCode::visit(Continue& s)
+void PrintCode::visit(Continue&)
 {
     this->endl();
-    out << "continue";
+    this->keyword("continue");
 }
 
-void PrintCode::visit(Pass& s)
+void PrintCode::visit(Pass&)
 {
     this->endl();
-    out << "pass";
+    this->keyword("pass");
 }
 
 void PrintCode::visit(Block& s)
@@ -193,7 +221,8 @@ void PrintCode::visit(Block& s)
 void PrintCode::visit(Class& s)
 {
     this->endl();
-    out << "class ";
+    this->keyword("class");
+    out << " ";
     s.mName->accept(*this);
     s.mBlock->accept(*this);
 }
@@ -201,7 +230,8 @@ void PrintCode::visit(Class& s)
 void PrintCode::visit(Concept& s)
 {
     this->endl();
-    out << "concept ";
+    this->keyword("concept");
+    out << " ";
     s.mName->accept(*this);
     s.mBlock->accept(*this);
 }
@@ -209,7 +239,8 @@ void PrintCode::visit(Concept& s)
 void PrintCode::visit(Function& s)
 {
     this->endl();
-    out << "def ";
+    this->keyword("def");
+    out << " ";
     s.mSignature->accept(*this);
     s.mBlock->accept(*this);
 }
@@ -217,14 +248,15 @@ void PrintCode::visit(Function& s)
 void PrintCode::visit(Forever& s)
 {
     this->endl();
-    out << "forever";
+    this->keyword("forever");
     s.mBlock->accept(*this);
 }
 
 void PrintCode::visit(While& s)
 {
     this->endl();
-    out << "while ";
+    this->keyword("while");
+    out << " ";
     s.mCondition->accept(*this);
     s.mBlock->accept(*this);
 }
@@ -232,9 +264,12 @@ void PrintCode::visit(While& s)
 void PrintCode::visit(For& s)
 {
     this->endl();
-    out << "for ";
+    this->keyword("for");
+    out << " ";
     s.mVariable->accept(*this);
-    out << " in ";
+    out << " ";
+    this->keyword("in");
+    out << " ";
     s.mRange->accept(*this);
     s.mBlock->accept(*this);
 }
@@ -246,9 +281,15 @@ void PrintCode::visit(If& s)
     {
         this->endl();
         if (begin)
-            out << "elsif ";
+        {
+            this->keyword("elsif");
+            out << " ";
+        }
         else
-            out << "if ";
+        {
+            this->keyword("if");
+            out << " ";
+        }
         begin = true;
 
         it.first->accept(*this);
@@ -258,7 +299,7 @@ void PrintCode::visit(If& s)
     if (s.mElse)
     {
         this->endl();
-        out << "else";
+        this->keyword("else");
         s.mElse->accept(*this);
     }
 }
@@ -266,13 +307,15 @@ void PrintCode::visit(If& s)
 void PrintCode::visit(Switch& s)
 {
     this->endl();
-    out << "switch ";
+    this->keyword("switch");
+    out << " ";
     s.mExpression->accept(*this);
 
     for (auto&& it : s.mConditions)
     {
         this->endl();
-        out << "case ";
+        this->keyword("case");
+        out << " ";
         it.first->accept(*this);
         it.second->accept(*this);
     }
@@ -280,7 +323,7 @@ void PrintCode::visit(Switch& s)
     if (s.mDefault)
     {
         this->endl();
-        out << "default";
+        this->keyword("default");
         s.mDefault->accept(*this);
     }
 }
@@ -288,15 +331,19 @@ void PrintCode::visit(Switch& s)
 void PrintCode::visit(Match& s)
 {
     this->endl();
-    out << "match ";
+    this->keyword("match");
+    out << " ";
     s.mExpression->accept(*this);
 
     for (auto&& it : s.mConditions)
     {
         this->endl();
-        out << "with ";
+        this->keyword("with");
+        out << " ";
         std::get<0>(it)->accept(*this);
-        out << " as ";
+        out << " ";
+        this->keyword("as");
+        out << " ";
         std::get<1>(it)->accept(*this);
         std::get<2>(it)->accept(*this);
     }

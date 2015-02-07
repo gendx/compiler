@@ -16,26 +16,29 @@
     along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.txt
 */
 
+#ifndef SCOPEVISITOR_HPP
+#define SCOPEVISITOR_HPP
+
+#include "recursivevisitor.hpp"
 #include "ast.hpp"
+#include <stack>
 
-AST::AST(std::shared_ptr<Block> root) :
-    mRoot(root)
+class ScopeVisitor : public RecursiveVisitor
 {
-}
+public:
+    static void visit(AST& ast);
 
+    void visit(Identifier& e);
+    void visit(Identify& e);
 
-void AST::visit(Visitor& v)
-{
-    mRoot->accept(v);
-}
+    void visit(Block& s);
+    void visit(Class& s);
+    void visit(Function& s);
 
+private:
+    ScopeVisitor();
 
-bool AST::printErrors(std::ostream& out) const
-{
-    if (mSyntaxError)
-    {
-        out << *mSyntaxError;
-        return true;
-    }
-    return false;
-}
+    std::stack<std::shared_ptr<Scope> > mScopes;
+};
+
+#endif // SCOPEVISITOR_HPP

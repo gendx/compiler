@@ -25,7 +25,7 @@
 class AST
 {
 public:
-    AST();
+    AST() = default;
     AST(std::shared_ptr<Block> root);
 
     void visit(Visitor& v);
