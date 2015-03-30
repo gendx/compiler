@@ -16,22 +16,28 @@
     along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.txt
 */
 
-#include "parse/Parser.h"
-#include "ast/visit/printvisitor.hpp"
-#include "ast/visit/printcode.hpp"
-#include "ast/visit/symbolresolver.hpp"
+#include "error.hpp"
 
-int main()
+namespace error {
+
+std::ostream& AlreadyDeclared::print(std::ostream& out)
 {
-    Parser parser;
-    parser.parse();
-    AST ast = parser.ast();
+    return out << "'" << mError.token() << "' was already declared in this scope :" << mError << "First declaration is :" << mFirst;
+}
 
-    if (ast.printErrors(std::cerr))
-        return 1;
+std::ostream& ExpectedType::print(std::ostream& out)
+{
+    return out << "A type is expected here :" << mError;
+}
 
-    if (!SymbolResolver::resolve(ast, std::cerr))
-        return 1;
-    PrintVisitor::print(std::cerr, ast);
-    PrintCode::print(std::cout, ast, true);
+std::ostream& AlreadyQualifiedType::print(std::ostream& out)
+{
+    return out << "Type '" << mType.token() << "' is already qualified :" << mType << "But an extra qualification is given :" << mExtraQualification;
+}
+
+std::ostream& EmptyTypeQualification::print(std::ostream& out)
+{
+    return out << "Type qualification is empty :" << mError;
+}
+
 }

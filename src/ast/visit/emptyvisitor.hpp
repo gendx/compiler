@@ -16,12 +16,12 @@
     along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.txt
 */
 
-#ifndef RECURSIVEVISITOR_HPP
-#define RECURSIVEVISITOR_HPP
+#ifndef EMPTYVISITOR_HPP
+#define EMPTYVISITOR_HPP
 
 #include "visitor.hpp"
 
-class RecursiveVisitor : public Visitor
+class EmptyVisitor : public Visitor
 {
 public:
     void visit(LexicalError& e);
@@ -32,6 +32,7 @@ public:
     void visit(DataChar& e);
     void visit(DataNumber& e);
     void visit(Identify& e);
+    void visit(Parameters& e);
     void visit(Call& e);
     void visit(Member& e);
     void visit(Name& e);
@@ -56,9 +57,10 @@ public:
     void visit(Switch& s);
     void visit(Match& s);
 
+    void visit(DecorationValue& d);
     void visit(DecorationType& d);
     void visit(DecorationFunction& d);
     void visit(DecorationVariable& d);
 };
 
-#endif // RECURSIVEVISITOR_HPP
+#endif // EMPTYVISITOR_HPP

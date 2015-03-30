@@ -17,7 +17,7 @@
 */
 
 #include "expression.hpp"
-#include "visitor.hpp"
+#include "visit/visitor.hpp"
 
 #include <unordered_map>
 #include <map>
@@ -179,6 +179,10 @@ void DataNumber::accept(Visitor& v)
     v.visit(*this);
 }
 void Identify::accept(Visitor& v)
+{
+    v.visit(*this);
+}
+void Parameters::accept(Visitor& v)
 {
     v.visit(*this);
 }

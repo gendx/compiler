@@ -33,6 +33,9 @@ public:
 
     virtual void accept(Visitor& v) = 0;
 
+    // Semantic.
+    std::shared_ptr<Decoration> mDecoration;
+
 protected:
     using Token::Token;
 };
@@ -74,9 +77,6 @@ public:
         Expression{name} {}
 
     void accept(Visitor& v);
-
-    // Semantic.
-    std::shared_ptr<Decoration> mDecoration;
 };
 
 
@@ -123,13 +123,30 @@ public:
 class Identify : public Expression, public std::enable_shared_from_this<Identify>
 {
 public:
-    inline Identify(std::shared_ptr<Expression> type, std::shared_ptr<Identifier> identifier) :
-        Expression{*type, *identifier}, mType(type), mIdentifier(identifier) {}
+    inline Identify(std::shared_ptr<Identifier> identifier, std::shared_ptr<Expression> type) :
+        Expression{*identifier, *type}, mIdentifier(identifier), mType(type) {}
 
     void accept(Visitor& v);
 
-    std::shared_ptr<Expression> mType;
     std::shared_ptr<Identifier> mIdentifier;
+    std::shared_ptr<Expression> mType;
+};
+
+
+/** Parameters **/
+class Parameters : public Expression
+{
+public:
+    Parameters() = default;
+    inline Parameters(std::shared_ptr<Identify> e) :
+        Expression{*e}, mParameters{e} {}
+
+    inline void append(std::shared_ptr<Identify> e)
+        {appendToken(*e); mParameters.push_back(e);}
+
+    void accept(Visitor& v);
+
+    std::vector<std::shared_ptr<Identify> > mParameters;
 };
 
 
@@ -167,13 +184,13 @@ class Name : public Expression
 public:
     inline Name(std::shared_ptr<Identifier> name) :
         Expression{*name}, mName(name) {}
-    inline Name(std::shared_ptr<Identifier> name, std::shared_ptr<ExprList> args) :
-        Expression{*name, *args}, mName(name), mArgs(args) {}
+    inline Name(std::shared_ptr<Identifier> name, std::shared_ptr<Parameters> params) :
+        Expression{*name, *params}, mName(name), mParams(params) {}
 
     void accept(Visitor& v);
 
     std::shared_ptr<Identifier> mName;
-    std::shared_ptr<ExprList> mArgs;
+    std::shared_ptr<Parameters> mParams;
 };
 
 
@@ -181,14 +198,14 @@ public:
 class Signature : public Expression
 {
 public:
-    inline Signature(std::shared_ptr<Expression> type, std::shared_ptr<Identifier> identifier, std::shared_ptr<ExprList> args) :
-        Expression{*type, *identifier, *args}, mType(type), mIdentifier(identifier), mArgs(args) {}
+    inline Signature(std::shared_ptr<Identifier> identifier, std::shared_ptr<Parameters> params, std::shared_ptr<Expression> type) :
+        Expression{*identifier, *params, *type}, mIdentifier(identifier), mParams(params), mType(type) {}
 
     void accept(Visitor& v);
 
-    std::shared_ptr<Expression> mType;
     std::shared_ptr<Identifier> mIdentifier;
-    std::shared_ptr<ExprList> mArgs;
+    std::shared_ptr<Parameters> mParams;
+    std::shared_ptr<Expression> mType;
 };
 
 

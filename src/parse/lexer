@@ -175,6 +175,10 @@ default {
     *d_val = makeToken();
     return Parser::OP_UNARY; }
 
+":" {
+    *d_val = makeToken();
+    return Parser::COLON; }
+
 
 // ******************** Comment ********************
 \/\/.*$ {

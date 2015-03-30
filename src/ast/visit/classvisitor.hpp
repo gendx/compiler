@@ -16,29 +16,26 @@
     along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.txt
 */
 
-#ifndef SCOPEVISITOR_HPP
-#define SCOPEVISITOR_HPP
+#ifndef CLASSVISITOR_HPP
+#define CLASSVISITOR_HPP
 
 #include "recursivevisitor.hpp"
-#include "ast.hpp"
-#include <stack>
+#include "../ast.hpp"
+#include "../error/error.hpp"
 
-class ScopeVisitor : public RecursiveVisitor
+class ClassVisitor : public RecursiveVisitor
 {
 public:
-    static void visit(AST& ast);
-
-    void visit(Identifier& e);
-    void visit(Identify& e);
+    static bool visit(AST& ast, std::ostream& err);
 
     void visit(Block& s);
     void visit(Class& s);
-    void visit(Function& s);
 
 private:
-    ScopeVisitor();
+    ClassVisitor() = default;
 
-    std::stack<std::shared_ptr<Scope> > mScopes;
+    std::shared_ptr<Scope> mScope;
+    std::vector<std::unique_ptr<error::Error> > mErrors;
 };
 
-#endif // SCOPEVISITOR_HPP
+#endif // CLASSVISITOR_HPP

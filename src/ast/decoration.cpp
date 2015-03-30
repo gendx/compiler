@@ -18,13 +18,29 @@
 
 #include "decoration.hpp"
 
-#include "visitor.hpp"
+#include "visit/visitor.hpp"
 
 Decoration::~Decoration()
 {
 }
 
+const Token& DecorationType::token() const
+{
+    return *(mType->definition().lock()->mName->mName);
+}
+const Token& DecorationFunction::token() const
+{
+    return *(mFunction.lock()->mSignature->mIdentifier);
+}
+const Token& DecorationVariable::token() const
+{
+    return *(mIdentify.lock()->mIdentifier);
+}
 
+void DecorationValue::accept(Visitor& v)
+{
+    v.visit(*this);
+}
 void DecorationType::accept(Visitor& v)
 {
     v.visit(*this);
@@ -36,4 +52,47 @@ void DecorationFunction::accept(Visitor& v)
 void DecorationVariable::accept(Visitor& v)
 {
     v.visit(*this);
+}
+
+
+bool Decoration::isValue()
+{
+    return false;
+}
+bool Decoration::isIdentifier()
+{
+    return false;
+}
+bool Decoration::isType()
+{
+    return false;
+}
+bool Decoration::isFunction()
+{
+    return false;
+}
+bool Decoration::isVariable()
+{
+    return false;
+}
+
+bool DecorationValue::isValue()
+{
+    return true;
+}
+bool DecorationIdentifier::isIdentifier()
+{
+    return true;
+}
+bool DecorationType::isType()
+{
+    return true;
+}
+bool DecorationFunction::isFunction()
+{
+    return true;
+}
+bool DecorationVariable::isVariable()
+{
+    return true;
 }

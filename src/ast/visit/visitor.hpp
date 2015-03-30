@@ -19,8 +19,8 @@
 #ifndef VISITOR_HPP
 #define VISITOR_HPP
 
-#include "expression.hpp"
-#include "statement.hpp"
+#include "../expression.hpp"
+#include "../statement.hpp"
 
 class Visitor
 {
@@ -35,6 +35,7 @@ public:
     virtual void visit(DataChar& e) = 0;
     virtual void visit(DataNumber& e) = 0;
     virtual void visit(Identify& e) = 0;
+    virtual void visit(Parameters& e) = 0;
     virtual void visit(Call& e) = 0;
     virtual void visit(Member& e) = 0;
     virtual void visit(Name& e) = 0;
@@ -59,6 +60,7 @@ public:
     virtual void visit(Switch& s) = 0;
     virtual void visit(Match& s) = 0;
 
+    virtual void visit(DecorationValue& d) = 0;
     virtual void visit(DecorationType& d) = 0;
     virtual void visit(DecorationFunction& d) = 0;
     virtual void visit(DecorationVariable& d) = 0;

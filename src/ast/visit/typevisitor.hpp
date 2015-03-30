@@ -16,22 +16,29 @@
     along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.txt
 */
 
-#include "parse/Parser.h"
-#include "ast/visit/printvisitor.hpp"
-#include "ast/visit/printcode.hpp"
-#include "ast/visit/symbolresolver.hpp"
+#ifndef TYPEVISITOR_HPP
+#define TYPEVISITOR_HPP
 
-int main()
+#include "recursivevisitor.hpp"
+#include "../ast.hpp"
+#include "../error/error.hpp"
+
+class TypeVisitor : public RecursiveVisitor
 {
-    Parser parser;
-    parser.parse();
-    AST ast = parser.ast();
+public:
+    static bool visit(AST& ast, std::ostream& err);
 
-    if (ast.printErrors(std::cerr))
-        return 1;
+    void visit(Block& s);
+    void visit(Identifier& e);
+    void visit(Index& e);
 
-    if (!SymbolResolver::resolve(ast, std::cerr))
-        return 1;
-    PrintVisitor::print(std::cerr, ast);
-    PrintCode::print(std::cout, ast, true);
-}
+private:
+    TypeVisitor() = default;
+
+    static std::shared_ptr<Type> getType(const Expression& e);
+
+    std::shared_ptr<Scope> mScope;
+    std::vector<std::unique_ptr<error::Error> > mErrors;
+};
+
+#endif // TYPEVISITOR_HPP

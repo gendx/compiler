@@ -17,7 +17,7 @@
 */
 
 #include "statement.hpp"
-#include "visitor.hpp"
+#include "visit/visitor.hpp"
 
 Statement::~Statement()
 {

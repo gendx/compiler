@@ -17,7 +17,7 @@
 */
 
 #include "printcode.hpp"
-#include "../misc/colorizer.hpp"
+#include "../../misc/colorizer.hpp"
 
 #include <ostream>
 
@@ -80,7 +80,7 @@ void PrintCode::visit(ExprList& e)
 
 void PrintCode::visit(Identifier& e)
 {
-    if (e.mDecoration)
+    if (e.mDecoration && e.mDecoration->isIdentifier())
         e.mDecoration->accept(*this);
     else
         out << Colorizer(mColorize).under();
@@ -112,9 +112,21 @@ void PrintCode::visit(DataNumber& e)
 
 void PrintCode::visit(Identify& e)
 {
-    e.mType->accept(*this);
-    out << " ";
     e.mIdentifier->accept(*this);
+    out << " : ";
+    e.mType->accept(*this);
+}
+
+void PrintCode::visit(Parameters& e)
+{
+    bool begin = false;
+    for (auto&& it : e.mParameters)
+    {
+        if (begin)
+            out << ", ";
+        begin = true;
+        it->accept(*this);
+    }
 }
 
 void PrintCode::visit(Call& e)
@@ -135,22 +147,22 @@ void PrintCode::visit(Member& e)
 void PrintCode::visit(Name& e)
 {
     e.mName->accept(*this);
-    if (e.mArgs)
+    if (e.mParams)
     {
-        out << "(";
-        e.mArgs->accept(*this);
-        out << ")";
+        out << "[";
+        e.mParams->accept(*this);
+        out << "]";
     }
 }
 
 void PrintCode::visit(Signature& e)
 {
-    e.mType->accept(*this);
-    out << " ";
     e.mIdentifier->accept(*this);
     out << "(";
-    e.mArgs->accept(*this);
+    e.mParams->accept(*this);
     out << ")";
+    out << " : ";
+    e.mType->accept(*this);
 }
 
 void PrintCode::visit(Index& e)

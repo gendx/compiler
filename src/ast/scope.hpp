@@ -19,8 +19,9 @@
 #ifndef SCOPE_HPP
 #define SCOPE_HPP
 
-#include <unordered_map>
 #include "decoration.hpp"
+#include <unordered_map>
+#include <vector>
 
 class Identify;
 
@@ -30,16 +31,18 @@ public:
     Scope() = default;
     Scope(std::shared_ptr<Scope> parent);
 
-    std::shared_ptr<Decoration> lookup(const std::string& name) const;
-    void set(const std::string& name, std::weak_ptr<Class> c);
-    void set(const std::string& name, std::weak_ptr<Function> f);
-    void set(const std::string& name, std::weak_ptr<Identify> i);
+    std::shared_ptr<DecorationIdentifier> lookup(const std::string& name) const;
+    std::shared_ptr<DecorationIdentifier> lookupLocal(const std::string& name) const;
+
+    std::shared_ptr<DecorationType> set(const std::string& name, std::weak_ptr<Class> c);
+    std::shared_ptr<DecorationFunction> set(const std::string& name, std::weak_ptr<Function> f);
+    std::shared_ptr<DecorationVariable> set(const std::string& name, std::weak_ptr<Identify> i);
 
 private:
     std::shared_ptr<Scope> mParent;
-    std::unordered_map<std::string, std::weak_ptr<Class> > mClasses;
-    std::unordered_map<std::string, std::weak_ptr<Function> > mFunctions;
-    std::unordered_map<std::string, std::weak_ptr<Identify> > mVariables;
+    std::unordered_map<std::string, std::shared_ptr<DecorationType> > mClasses;
+    std::unordered_map<std::string, std::vector<std::shared_ptr<DecorationFunction> > > mFunctions;
+    std::unordered_map<std::string, std::shared_ptr<DecorationVariable> > mVariables;
 };
 
 #endif // SCOPE_HPP

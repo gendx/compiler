@@ -18,40 +18,22 @@
 
 #include "recursivevisitor.hpp"
 
-void RecursiveVisitor::visit(LexicalError&)
-{
-}
-
 void RecursiveVisitor::visit(ExprList& e)
 {
     for (auto&& it : e.mExpressions)
         it->accept(*this);
 }
 
-void RecursiveVisitor::visit(Identifier&)
-{
-}
-
-void RecursiveVisitor::visit(Data&)
-{
-}
-
-void RecursiveVisitor::visit(DataString&)
-{
-}
-
-void RecursiveVisitor::visit(DataChar&)
-{
-}
-
-void RecursiveVisitor::visit(DataNumber&)
-{
-}
-
 void RecursiveVisitor::visit(Identify& e)
 {
     e.mType->accept(*this);
     e.mIdentifier->accept(*this);
+}
+
+void RecursiveVisitor::visit(Parameters& e)
+{
+    for (auto&& it : e.mParameters)
+        it->accept(*this);
 }
 
 void RecursiveVisitor::visit(Call& e)
@@ -69,14 +51,15 @@ void RecursiveVisitor::visit(Member& e)
 void RecursiveVisitor::visit(Name& e)
 {
     e.mName->accept(*this);
-    e.mArgs->accept(*this);
+    if (e.mParams)
+        e.mParams->accept(*this);
 }
 
 void RecursiveVisitor::visit(Signature& e)
 {
     e.mType->accept(*this);
     e.mIdentifier->accept(*this);
-    e.mArgs->accept(*this);
+    e.mParams->accept(*this);
 }
 
 void RecursiveVisitor::visit(Index& e)
@@ -105,18 +88,6 @@ void RecursiveVisitor::visit(ExprStmt& s)
 void RecursiveVisitor::visit(Return& s)
 {
     s.mExpression->accept(*this);
-}
-
-void RecursiveVisitor::visit(Break&)
-{
-}
-
-void RecursiveVisitor::visit(Continue&)
-{
-}
-
-void RecursiveVisitor::visit(Pass&)
-{
 }
 
 void RecursiveVisitor::visit(Block& s)
@@ -197,17 +168,4 @@ void RecursiveVisitor::visit(Match& s)
         std::get<1>(it)->accept(*this);
         std::get<2>(it)->accept(*this);
     }
-}
-
-
-void RecursiveVisitor::visit(DecorationType&)
-{
-}
-
-void RecursiveVisitor::visit(DecorationFunction&)
-{
-}
-
-void RecursiveVisitor::visit(DecorationVariable&)
-{
 }

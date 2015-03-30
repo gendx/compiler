@@ -10,15 +10,22 @@ ADD_EXECUTABLE(
     src/main.cpp
     src/ast/ast.cpp
     src/ast/decoration.cpp
+    src/ast/error/error.cpp
     src/ast/expression.cpp
-    src/ast/printcode.cpp
-    src/ast/printvisitor.cpp
-    src/ast/recursivevisitor.cpp
     src/ast/scope.cpp
-    src/ast/scopevisitor.cpp
     src/ast/statement.cpp
     src/ast/syntaxerror.cpp
-    src/ast/visitor.cpp
+    src/ast/type.cpp
+    src/ast/visit/classvisitor.cpp
+    src/ast/visit/emptyvisitor.cpp
+    src/ast/visit/functionvisitor.cpp
+    src/ast/visit/printcode.cpp
+    src/ast/visit/printvisitor.cpp
+    src/ast/visit/recursivevisitor.cpp
+    src/ast/visit/scopevisitor.cpp
+    src/ast/visit/symbolresolver.cpp
+    src/ast/visit/typevisitor.cpp
+    src/ast/visit/visitor.cpp
     src/misc/colorizer.cpp
     src/parse/concatstream.cpp
     src/parse/lex.cc

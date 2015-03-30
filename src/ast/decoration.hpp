@@ -20,11 +20,13 @@
 #define DECORATION_HPP
 
 #include "type.hpp"
+#include "../parse/token.hpp"
 
-class Function;
 class Visitor;
+class Function;
+class Identify;
 
-// A decoration specifies what an identifier represents (type, function or variable).
+// A decoration specifies what an expression represents (value, type, function or variable).
 class Decoration
 {
 public:
@@ -32,42 +34,81 @@ public:
 
     virtual void accept(Visitor& v) = 0;
 
+    virtual bool isValue();
+    virtual bool isIdentifier();
+    virtual bool isType();
+    virtual bool isFunction();
+    virtual bool isVariable();
+
+    std::shared_ptr<Type> mType;
+
 protected:
-    inline Decoration(Type type) :
+    Decoration() = default;
+    inline Decoration(std::shared_ptr<Type> type) :
         mType(type) {}
-
-    Type mType;
 };
 
 
-class DecorationType : public Decoration
+class DecorationValue : public Decoration
 {
 public:
-    inline DecorationType(Type type) :
-        Decoration(type) {}
-
     void accept(Visitor& v);
+
+    virtual bool isValue();
 };
 
-class DecorationFunction : public Decoration
+class DecorationIdentifier : public Decoration
 {
 public:
-    inline DecorationFunction(Type type, std::weak_ptr<Function> function) :
-        Decoration(type), mFunction(function) {}
+    virtual const Token& token() const = 0;
+
+    virtual bool isIdentifier();
+
+protected:
+    using Decoration::Decoration;
+};
+
+
+class DecorationType : public DecorationIdentifier
+{
+public:
+    inline DecorationType(std::weak_ptr<Class> type) :
+        DecorationIdentifier(std::make_shared<Type>(type)) {}
+    inline DecorationType(std::weak_ptr<Class> type, const std::vector<Type>& arguments) :
+        DecorationIdentifier(std::make_shared<Type>(type, arguments)) {}
 
     void accept(Visitor& v);
+    const Token& token() const;
 
-private:
+    virtual bool isType();
+};
+
+class DecorationFunction : public DecorationIdentifier
+{
+public:
+    inline DecorationFunction(std::weak_ptr<Function> function) :
+        mFunction(function) {}
+
+    void accept(Visitor& v);
+    const Token& token() const;
+
+    virtual bool isFunction();
+
     std::weak_ptr<Function> mFunction;
 };
 
-class DecorationVariable : public Decoration
+class DecorationVariable : public DecorationIdentifier
 {
 public:
-    inline DecorationVariable(Type type) :
-        Decoration(type) {}
+    inline DecorationVariable(std::weak_ptr<Identify> identify) :
+        mIdentify(identify) {}
 
     void accept(Visitor& v);
+    const Token& token() const;
+
+    virtual bool isVariable();
+
+    std::weak_ptr<Identify> mIdentify;
 };
 
 #endif // DECORATION_HPP

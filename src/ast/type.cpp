@@ -17,3 +17,33 @@
 */
 
 #include "type.hpp"
+
+#include "statement.hpp"
+
+std::ostream& operator<<(std::ostream& out, const Type& type)
+{
+    out << type.mDefinition.lock()->mName->mName->token();
+    if (!type.mParameters.empty())
+    {
+        out << "[";
+        bool started = false;
+        for (auto&& t : type.mParameters)
+        {
+            if (started)
+                out << ", ";
+            started = true;
+            out << t;
+        }
+        out << "]";
+    }
+    return out;
+}
+
+bool Type::operator<(const Type& rhs) const
+{
+    auto lhsp = mDefinition.lock().get();
+    auto rhsp = rhs.mDefinition.lock().get();
+    return lhsp != rhsp ?
+                lhsp < rhsp :
+                mParameters < rhs.mParameters;
+}

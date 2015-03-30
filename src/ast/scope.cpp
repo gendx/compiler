@@ -24,41 +24,61 @@ Scope::Scope(std::shared_ptr<Scope> parent) :
 }
 
 
-std::shared_ptr<Decoration> Scope::lookup(const std::string& name) const
+std::shared_ptr<DecorationIdentifier> Scope::lookup(const std::string& name) const
+{
+    std::shared_ptr<DecorationIdentifier> result = this->lookupLocal(name);
+
+    if ((!result) && mParent)
+        return mParent->lookup(name);
+
+    return result;
+}
+
+std::shared_ptr<DecorationIdentifier> Scope::lookupLocal(const std::string& name) const
 {
     {
         auto it = mClasses.find(name);
         if (it != mClasses.end())
-            return std::make_shared<DecorationType>(Type(it->second));
+            return it->second;
     }
     {
         auto it = mFunctions.find(name);
         if (it != mFunctions.end())
-            return std::make_shared<DecorationFunction>(Type(std::weak_ptr<Class>()), it->second);
+            return it->second.front();
     }
     {
         auto it = mVariables.find(name);
         if (it != mVariables.end())
-            return std::make_shared<DecorationVariable>(Type(std::weak_ptr<Class>()));
+            return it->second;
     }
 
-    if (mParent)
-        return mParent->lookup(name);
-
-    return std::shared_ptr<Decoration>();
+    return std::shared_ptr<DecorationIdentifier>();
 }
 
-void Scope::set(const std::string& name, std::weak_ptr<Class> c)
+
+std::shared_ptr<DecorationType> Scope::set(const std::string& name, std::weak_ptr<Class> c)
 {
-    mClasses[name] = c;
+    auto decoration = std::make_shared<DecorationType>(c);
+    mClasses[name] = decoration;
+    return decoration;
 }
 
-void Scope::set(const std::string& name, std::weak_ptr<Function> f)
+std::shared_ptr<DecorationFunction> Scope::set(const std::string& name, std::weak_ptr<Function> f)
 {
-    mFunctions[name] = f;
+    auto decoration = std::make_shared<DecorationFunction>(f);
+
+    auto found = mFunctions.find(name);
+    if (found != mFunctions.end())
+        found->second.push_back(decoration);
+    else
+        mFunctions[name].push_back(decoration);
+
+    return decoration;
 }
 
-void Scope::set(const std::string& name, std::weak_ptr<Identify> i)
+std::shared_ptr<DecorationVariable> Scope::set(const std::string& name, std::weak_ptr<Identify> i)
 {
-    mVariables[name] = i;
+    auto decoration = std::make_shared<DecorationVariable>(i);
+    mVariables[name] = decoration;
+    return decoration;
 }

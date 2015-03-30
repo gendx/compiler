@@ -20,17 +20,35 @@
 #define TYPE_HPP
 
 #include <memory>
+#include <vector>
+#include "../parse/token.hpp"
 
 class Class;
 
 class Type
 {
+    friend std::ostream& operator<<(std::ostream& out, const Type& type);
+
 public:
     Type(std::weak_ptr<Class> definition) :
         mDefinition(definition) {}
+    Type(std::weak_ptr<Class> definition, const std::vector<Type>& parameters) :
+        mDefinition(definition), mParameters(parameters) {}
+
+    bool operator<(const Type& rhs) const;
+
+    inline std::weak_ptr<Class> definition() const;
+    inline const std::vector<Type>& parameters() const;
 
 private:
     std::weak_ptr<Class> mDefinition;
+    std::vector<Type> mParameters;
 };
+
+
+inline std::weak_ptr<Class> Type::definition() const
+    {return mDefinition;}
+inline const std::vector<Type>& Type::parameters() const
+    {return mParameters;}
 
 #endif // TYPE_HPP

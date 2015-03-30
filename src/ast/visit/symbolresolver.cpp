@@ -16,22 +16,13 @@
     along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.txt
 */
 
-#include "parse/Parser.h"
-#include "ast/visit/printvisitor.hpp"
-#include "ast/visit/printcode.hpp"
-#include "ast/visit/symbolresolver.hpp"
+#include "symbolresolver.hpp"
 
-int main()
+#include "classvisitor.hpp"
+#include "typevisitor.hpp"
+#include "functionvisitor.hpp"
+
+bool SymbolResolver::resolve(AST& ast, std::ostream& err)
 {
-    Parser parser;
-    parser.parse();
-    AST ast = parser.ast();
-
-    if (ast.printErrors(std::cerr))
-        return 1;
-
-    if (!SymbolResolver::resolve(ast, std::cerr))
-        return 1;
-    PrintVisitor::print(std::cerr, ast);
-    PrintCode::print(std::cout, ast, true);
+    return ClassVisitor::visit(ast, err) && TypeVisitor::visit(ast, err) && FunctionVisitor::visit(ast, err);
 }

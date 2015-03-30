@@ -28,6 +28,7 @@
 %polymorphic
     EXP: std::shared_ptr<Expression>;
     EXPLIST: std::shared_ptr<ExprList>;
+    PARAMETERS: std::shared_ptr<Parameters>;
     IDENT: std::shared_ptr<Identifier>;
     IDENTIFY : std::shared_ptr<Identify>;
     NAME: std::shared_ptr<Name>;
@@ -41,6 +42,7 @@
 
 %type <EXP> expr lexical_error number char string
 %type <EXPLIST> anylist list
+%type <PARAMETERS> parameters paramlist
 %type <IDENT> identifier
 %type <IDENTIFY> identify
 %type <NAME> name
@@ -61,6 +63,7 @@
 %token <TOK> FOREVER WHILE FOR IN
 %token <TOK> IF ELSE ELIF SWITCH CASE MATCH WITH AS DEFAULT
 %right <TOK> OP_ASSIGN
+%nonassoc <TOK> COLON
 %left <TOK> RANGE
 %left <TOK> COND_OR
 %left <TOK> COND_AND
@@ -112,6 +115,12 @@ stmts:
 stmt:
     expr EOL {
         $$ = std::make_shared<ExprStmt>($1);
+    }
+|   identify EOL {
+        $$ = std::make_shared<ExprStmt>($1);
+    }
+|   identify OP_ASSIGN expr EOL {
+        $$ = std::make_shared<ExprStmt>(std::make_shared<Binary>($1, $2, $3));
     }
 |   RETURN expr EOL {
         $$ = std::make_shared<Return>($2);
@@ -239,24 +248,45 @@ list:
 ;
 
 
+parameters:
+    {
+        $$ = std::make_shared<Parameters>();
+    }
+|   paramlist {
+        $$ = $1;
+    }
+;
+
+paramlist:
+    paramlist COMMA identify {
+        $$ = $1;
+        $$->append($3);
+    }
+|   identify {
+        $$ = std::make_shared<Parameters>($1);
+    }
+;
+
+
 name:
     identifier {
         $$ = std::make_shared<Name>($1);
     }
-|   identifier LEFT_PAR anylist RIGHT_PAR {
+|   identifier LEFT_BRACKET parameters RIGHT_BRACKET {
         $$ = std::make_shared<Name>($1, $3);
     }
 ;
 
+
 identify:
-    expr identifier {
-        $$ = std::make_shared<Identify>($1, $2);
+    identifier COLON expr {
+        $$ = std::make_shared<Identify>($1, $3);
     }
 ;
 
 signature:
-    expr identifier LEFT_PAR anylist RIGHT_PAR {
-        $$ = std::make_shared<Signature>($1, $2, $4);
+    identifier LEFT_PAR parameters RIGHT_PAR COLON expr {
+        $$ = std::make_shared<Signature>($1, $3, $6);
     }
 ;
 
@@ -277,9 +307,6 @@ expr:
         $$ = $1;
     }
 
-|   identify {
-        $$ = $1;
-    }
 |   LEFT_PAR expr RIGHT_PAR {
         $$ = $2;
     }

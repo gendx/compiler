@@ -67,8 +67,13 @@ void PrintVisitor::visit(ExprList& e)
 void PrintVisitor::visit(Identifier& e)
 {
     out << "(" << e.token() << " $ ";
-    if (e.mDecoration)
+    if (e.mDecoration && e.mDecoration->isIdentifier())
+    {
         e.mDecoration->accept(*this);
+        auto type = e.mDecoration->mType;
+        if (type)
+            out << " $ " << *type;
+    }
     else
         out << "<undeclared>";
     out << ")";
@@ -99,10 +104,22 @@ void PrintVisitor::visit(DataNumber& e)
 void PrintVisitor::visit(Identify& e)
 {
     out << "(";
-    e.mType->accept(*this);
-    out << "#";
     e.mIdentifier->accept(*this);
+    out << "#";
+    e.mType->accept(*this);
     out << ")";
+}
+
+void PrintVisitor::visit(Parameters& e)
+{
+    bool begin = false;
+    for (auto&& it : e.mParameters)
+    {
+        if (begin)
+            out << ", ";
+        begin = true;
+        it->accept(*this);
+    }
 }
 
 void PrintVisitor::visit(Call& e)
@@ -127,10 +144,10 @@ void PrintVisitor::visit(Name& e)
 {
     out << "(";
     e.mName->accept(*this);
-    if (e.mArgs)
+    if (e.mParams)
     {
         out << "(";
-        e.mArgs->accept(*this);
+        e.mParams->accept(*this);
         out << ")";
     }
     out << ")";
@@ -139,12 +156,11 @@ void PrintVisitor::visit(Name& e)
 void PrintVisitor::visit(Signature& e)
 {
     out << "(";
-    e.mType->accept(*this);
-    out << "#";
     e.mIdentifier->accept(*this);
     out << "(";
-    e.mArgs->accept(*this);
-    out << ")";
+    e.mParams->accept(*this);
+    out << ")#";
+    e.mType->accept(*this);
     out << ")";
 }
 

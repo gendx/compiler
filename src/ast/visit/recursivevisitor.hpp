@@ -16,25 +16,17 @@
     along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.txt
 */
 
-#ifndef PRINTVISITOR_HPP
-#define PRINTVISITOR_HPP
+#ifndef RECURSIVEVISITOR_HPP
+#define RECURSIVEVISITOR_HPP
 
-#include "recursivevisitor.hpp"
-#include "ast.hpp"
+#include "emptyvisitor.hpp"
 
-class PrintVisitor : public RecursiveVisitor
+class RecursiveVisitor : public EmptyVisitor
 {
 public:
-    static void print(std::ostream& s, AST& ast);
-
-    void visit(LexicalError& e);
     void visit(ExprList& e);
-    void visit(Identifier& e);
-    void visit(Data& e);
-    void visit(DataString& e);
-    void visit(DataChar& e);
-    void visit(DataNumber& e);
     void visit(Identify& e);
+    void visit(Parameters& e);
     void visit(Call& e);
     void visit(Member& e);
     void visit(Name& e);
@@ -43,10 +35,8 @@ public:
     void visit(Unary& e);
     void visit(Binary& e);
 
+    void visit(ExprStmt& s);
     void visit(Return& s);
-    void visit(Break& s);
-    void visit(Continue& s);
-    void visit(Pass& s);
     void visit(Block& s);
     void visit(Class& s);
     void visit(Concept& s);
@@ -57,15 +47,6 @@ public:
     void visit(If& s);
     void visit(Switch& s);
     void visit(Match& s);
-
-    void visit(DecorationType& d);
-    void visit(DecorationFunction& d);
-    void visit(DecorationVariable& d);
-
-private:
-    PrintVisitor(std::ostream& s);
-
-    std::ostream& out;
 };
 
-#endif // PRINTVISITOR_HPP
+#endif // RECURSIVEVISITOR_HPP

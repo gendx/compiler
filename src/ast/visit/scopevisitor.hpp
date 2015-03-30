@@ -16,22 +16,29 @@
     along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.txt
 */
 
-#include "parse/Parser.h"
-#include "ast/visit/printvisitor.hpp"
-#include "ast/visit/printcode.hpp"
-#include "ast/visit/symbolresolver.hpp"
+#ifndef SCOPEVISITOR_HPP
+#define SCOPEVISITOR_HPP
 
-int main()
+#include "recursivevisitor.hpp"
+#include "../ast.hpp"
+#include <stack>
+
+class ScopeVisitor : public RecursiveVisitor
 {
-    Parser parser;
-    parser.parse();
-    AST ast = parser.ast();
+public:
+    static void visit(AST& ast);
 
-    if (ast.printErrors(std::cerr))
-        return 1;
+    void visit(Identifier& e);
+    void visit(Identify& e);
 
-    if (!SymbolResolver::resolve(ast, std::cerr))
-        return 1;
-    PrintVisitor::print(std::cerr, ast);
-    PrintCode::print(std::cout, ast, true);
-}
+    void visit(Block& s);
+    void visit(Class& s);
+    void visit(Function& s);
+
+private:
+    ScopeVisitor();
+
+    std::stack<std::shared_ptr<Scope> > mScopes;
+};
+
+#endif // SCOPEVISITOR_HPP
