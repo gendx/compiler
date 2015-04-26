@@ -20,25 +20,28 @@
 #define SCOPEVISITOR_HPP
 
 #include "recursivevisitor.hpp"
-#include "../ast.hpp"
-#include <stack>
 
 class ScopeVisitor : public RecursiveVisitor
 {
 public:
-    static void visit(AST& ast);
-
-    void visit(Identifier& e);
-    void visit(Identify& e);
-
     void visit(Block& s);
-    void visit(Class& s);
+
     void visit(Function& s);
+    void visit(Signature& e);
+
+protected:
+    ScopeVisitor() = default;
+
+    inline Scope& scope();
 
 private:
-    ScopeVisitor();
+    std::shared_ptr<Scope>& getScope(std::shared_ptr<Scope>& s);
 
-    std::stack<std::shared_ptr<Scope> > mScopes;
+    std::shared_ptr<Scope> mScope;
+    std::shared_ptr<Scope> mSideScope;
 };
+
+inline Scope& ScopeVisitor::scope()
+    {return *mScope;}
 
 #endif // SCOPEVISITOR_HPP

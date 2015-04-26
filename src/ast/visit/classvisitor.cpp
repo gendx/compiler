@@ -28,26 +28,15 @@ bool ClassVisitor::visit(AST& ast, std::ostream& err)
 }
 
 
-void ClassVisitor::visit(Block& s)
-{
-    std::shared_ptr<Scope> oldScope = mScope;
-
-    mScope = std::make_shared<Scope>(oldScope);
-    s.mScope = mScope;
-    RecursiveVisitor::visit(s);
-
-    mScope = oldScope;
-}
-
 void ClassVisitor::visit(Class& s)
 {
     const std::string& name = s.mName->mName->token();
-    std::shared_ptr<DecorationIdentifier> d = mScope->lookupLocal(name);
+    std::shared_ptr<DecorationIdentifier> d = this->scope().lookupLocal(name);
     if (d)
         // TODO : use make_unique
         mErrors.push_back(std::unique_ptr<error::Error>(new error::AlreadyDeclared(*s.mName, d->token())));
     else
-        s.mName->mName->mDecoration = mScope->set(name, s.shared_from_this());
+        s.mName->mName->mDecoration = this->scope().set(name, s.shared_from_this());
 
     RecursiveVisitor::visit(s);
 }

@@ -28,24 +28,15 @@ bool FunctionVisitor::visit(AST& ast, std::ostream& err)
 }
 
 
-void FunctionVisitor::visit(Block& s)
-{
-    std::shared_ptr<Scope> oldScope = mScope;
-
-    mScope = s.mScope;
-    RecursiveVisitor::visit(s);
-    mScope = oldScope;
-}
-
 void FunctionVisitor::visit(Function& s)
 {
     const std::string& name = s.mSignature->mIdentifier->token();
-    std::shared_ptr<DecorationIdentifier> d = mScope->lookupLocal(name);
+    std::shared_ptr<DecorationIdentifier> d = this->scope().lookupLocal(name);
     if (d && !d->isFunction())
         // TODO : use make_unique
         mErrors.push_back(std::unique_ptr<error::Error>(new error::AlreadyDeclared(*s.mSignature->mIdentifier, d->token())));
     else
-        s.mSignature->mIdentifier->mDecoration = mScope->set(name, s.shared_from_this());
+        s.mSignature->mIdentifier->mDecoration = this->scope().set(name, s.shared_from_this());
 
-    RecursiveVisitor::visit(s);
+    ScopeVisitor::visit(s);
 }

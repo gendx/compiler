@@ -19,22 +19,20 @@
 #ifndef VARIABLEVISITOR_HPP
 #define VARIABLEVISITOR_HPP
 
-#include "recursivevisitor.hpp"
+#include "scopevisitor.hpp"
 #include "../ast.hpp"
 #include "../error/error.hpp"
 
-class VariableVisitor : public RecursiveVisitor
+class VariableVisitor : public ScopeVisitor
 {
 public:
     static bool visit(AST& ast, std::ostream& err);
 
-    void visit(Block& s);
     void visit(Identify& e);
 
 private:
     VariableVisitor() = default;
 
-    std::shared_ptr<Scope> mScope;
     std::vector<std::unique_ptr<error::Error> > mErrors;
 };
 

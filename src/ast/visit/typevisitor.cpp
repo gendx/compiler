@@ -28,36 +28,30 @@ bool TypeVisitor::visit(AST& ast, std::ostream& err)
 }
 
 
-void TypeVisitor::visit(Block& s)
-{
-    std::shared_ptr<Scope> oldScope = mScope;
-
-    mScope = s.mScope;
-    RecursiveVisitor::visit(s);
-    mScope = oldScope;
-}
-
 void TypeVisitor::visit(Identifier& e)
 {
-    e.mDecoration = mScope->lookup(e.token());
+    e.mDecoration = this->scope().lookup(e.token());
 }
 
 void TypeVisitor::visit(Index& e)
 {
     RecursiveVisitor::visit(e);
 
-    std::shared_ptr<Type> type = TypeVisitor::getType(*e.mExpression);
+    std::shared_ptr<Type> type = e.mExpression->getType();
     if (type)
     {
         if (!type->parameters().empty())
+        {
             // TODO : use make_unique
             mErrors.push_back(std::unique_ptr<error::Error>(new error::AlreadyQualifiedType(*e.mExpression, *e.mArgs)));
+            return;
+        }
 
         std::vector<Type> args;
 
         for (auto&& arg : e.mArgs->mExpressions)
         {
-            std::shared_ptr<Type> argType = TypeVisitor::getType(*arg);
+            std::shared_ptr<Type> argType = arg->getType();
             if (!argType)
                 // TODO : use make_unique
                 mErrors.push_back(std::unique_ptr<error::Error>(new error::ExpectedType(*arg)));
@@ -71,11 +65,4 @@ void TypeVisitor::visit(Index& e)
 
         e.mDecoration = std::make_shared<DecorationType>(type->definition(), args);
     }
-}
-
-std::shared_ptr<Type> TypeVisitor::getType(const Expression& e)
-{
-    if (e.mDecoration && e.mDecoration->isType())
-        return e.mDecoration->mType;
-    return std::shared_ptr<Type>();
 }

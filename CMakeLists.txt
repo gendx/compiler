@@ -25,6 +25,7 @@ ADD_EXECUTABLE(
     src/ast/visit/scopevisitor.cpp
     src/ast/visit/symbolresolver.cpp
     src/ast/visit/typevisitor.cpp
+    src/ast/visit/variablevisitor.cpp
     src/ast/visit/visitor.cpp
     src/misc/colorizer.cpp
     src/parse/concatstream.cpp

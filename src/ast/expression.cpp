@@ -27,6 +27,13 @@ Expression::~Expression()
 {
 }
 
+std::shared_ptr<Type> Expression::getType()
+{
+    if (mDecoration && mDecoration->isType())
+        return mDecoration->mType;
+    return std::shared_ptr<Type>();
+}
+
 
 Unary::UnOp Unary::strToOp(const std::string& s)
 {

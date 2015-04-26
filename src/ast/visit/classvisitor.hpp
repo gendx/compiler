@@ -19,22 +19,20 @@
 #ifndef CLASSVISITOR_HPP
 #define CLASSVISITOR_HPP
 
-#include "recursivevisitor.hpp"
+#include "scopevisitor.hpp"
 #include "../ast.hpp"
 #include "../error/error.hpp"
 
-class ClassVisitor : public RecursiveVisitor
+class ClassVisitor : public ScopeVisitor
 {
 public:
     static bool visit(AST& ast, std::ostream& err);
 
-    void visit(Block& s);
     void visit(Class& s);
 
 private:
     ClassVisitor() = default;
 
-    std::shared_ptr<Scope> mScope;
     std::vector<std::unique_ptr<error::Error> > mErrors;
 };
 

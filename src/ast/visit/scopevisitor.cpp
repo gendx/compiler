@@ -18,49 +18,41 @@
 
 #include "scopevisitor.hpp"
 
-void ScopeVisitor::visit(AST& ast)
-{
-    ScopeVisitor v;
-    ast.visit(v);
-}
-
-ScopeVisitor::ScopeVisitor()
-{
-    mScopes.push(std::make_shared<Scope>());
-}
-
-
-void ScopeVisitor::visit(Identifier& e)
-{
-    e.mDecoration = mScopes.top()->lookup(e.token());
-}
-
-void ScopeVisitor::visit(Identify& e)
-{
-    e.mType->accept(*this);
-    mScopes.top()->set(e.mIdentifier->token(), e.shared_from_this());
-}
-
-
 void ScopeVisitor::visit(Block& s)
 {
-    std::shared_ptr<Scope> scope = std::make_shared<Scope>(mScopes.top());
-    s.mScope = scope;
+    std::shared_ptr<Scope> oldScope = mScope;
 
-    mScopes.push(scope);
+    mScope = this->getScope(s.mScope);
     RecursiveVisitor::visit(s);
-    mScopes.pop();
-}
-
-void ScopeVisitor::visit(Class& s)
-{
-    mScopes.top()->set(s.mName->token(), s.shared_from_this());
-    s.mBlock->accept(*this);
+    mScope = oldScope;
 }
 
 void ScopeVisitor::visit(Function& s)
 {
+    std::shared_ptr<Scope> oldScope = mScope;
+
+    mSideScope = this->getScope(s.mScope);
     s.mSignature->accept(*this);
-    mScopes.top()->set(s.mSignature->mIdentifier->token(), s.shared_from_this());
+    mScope = mSideScope;
     s.mBlock->accept(*this);
+    mScope = oldScope;
+}
+
+void ScopeVisitor::visit(Signature& e)
+{
+    e.mType->accept(*this);
+    e.mIdentifier->accept(*this);
+
+    //std::shared_ptr<Scope> oldScope = mScope;
+    mScope = mSideScope;
+    e.mParams->accept(*this);
+    //mScope = oldScope;
+}
+
+
+std::shared_ptr<Scope>& ScopeVisitor::getScope(std::shared_ptr<Scope>& s)
+{
+    if (!s)
+        s = std::make_shared<Scope>(mScope);
+    return s;
 }

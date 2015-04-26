@@ -150,6 +150,9 @@ public:
 
     std::shared_ptr<Signature> mSignature;
     std::shared_ptr<Block> mBlock;
+
+    // Semantic.
+    std::shared_ptr<Scope> mScope;
 };
 
 

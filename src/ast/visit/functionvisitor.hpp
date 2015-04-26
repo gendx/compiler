@@ -19,22 +19,20 @@
 #ifndef FUNCTIONVISITOR_HPP
 #define FUNCTIONVISITOR_HPP
 
-#include "recursivevisitor.hpp"
+#include "scopevisitor.hpp"
 #include "../ast.hpp"
 #include "../error/error.hpp"
 
-class FunctionVisitor : public RecursiveVisitor
+class FunctionVisitor : public ScopeVisitor
 {
 public:
     static bool visit(AST& ast, std::ostream& err);
 
-    void visit(Block& s);
     void visit(Function& s);
 
 private:
     FunctionVisitor() = default;
 
-    std::shared_ptr<Scope> mScope;
     std::vector<std::unique_ptr<error::Error> > mErrors;
 };
 

@@ -21,8 +21,9 @@
 #include "classvisitor.hpp"
 #include "typevisitor.hpp"
 #include "functionvisitor.hpp"
+#include "variablevisitor.hpp"
 
 bool SymbolResolver::resolve(AST& ast, std::ostream& err)
 {
-    return ClassVisitor::visit(ast, err) && TypeVisitor::visit(ast, err) && FunctionVisitor::visit(ast, err);
+    return ClassVisitor::visit(ast, err) && TypeVisitor::visit(ast, err) && FunctionVisitor::visit(ast, err) && VariableVisitor::visit(ast, err);
 }

@@ -33,6 +33,8 @@ public:
 
     virtual void accept(Visitor& v) = 0;
 
+    std::shared_ptr<Type> getType();
+
     // Semantic.
     std::shared_ptr<Decoration> mDecoration;
 

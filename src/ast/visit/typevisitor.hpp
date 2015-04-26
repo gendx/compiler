@@ -19,25 +19,21 @@
 #ifndef TYPEVISITOR_HPP
 #define TYPEVISITOR_HPP
 
-#include "recursivevisitor.hpp"
+#include "scopevisitor.hpp"
 #include "../ast.hpp"
 #include "../error/error.hpp"
 
-class TypeVisitor : public RecursiveVisitor
+class TypeVisitor : public ScopeVisitor
 {
 public:
     static bool visit(AST& ast, std::ostream& err);
 
-    void visit(Block& s);
     void visit(Identifier& e);
     void visit(Index& e);
 
 private:
     TypeVisitor() = default;
 
-    static std::shared_ptr<Type> getType(const Expression& e);
-
-    std::shared_ptr<Scope> mScope;
     std::vector<std::unique_ptr<error::Error> > mErrors;
 };
 

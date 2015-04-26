@@ -28,17 +28,25 @@ bool VariableVisitor::visit(AST& ast, std::ostream& err)
 }
 
 
-void VariableVisitor::visit(Block& s)
-{
-    std::shared_ptr<Scope> oldScope = mScope;
-
-    mScope = s.mScope;
-    RecursiveVisitor::visit(s);
-    mScope = oldScope;
-}
-
-
 void VariableVisitor::visit(Identify& e)
 {
-    mScope->set(e.mIdentifier->token(), e.shared_from_this());
+    const std::string& name = e.mIdentifier->token();
+    std::shared_ptr<DecorationIdentifier> d = this->scope().lookupLocal(name);
+    if (d)
+    {
+        // TODO : use make_unique
+        mErrors.push_back(std::unique_ptr<error::Error>(new error::AlreadyDeclared(*e.mIdentifier, d->token())));
+        return;
+    }
+
+    std::shared_ptr<Type> type = e.mType->getType();
+    if (!type)
+    {
+        // TODO : use make_unique
+        mErrors.push_back(std::unique_ptr<error::Error>(new error::ExpectedType(*e.mType)));
+        return;
+    }
+
+    e.mIdentifier->mDecoration = this->scope().set(name, e.shared_from_this());
+    e.mIdentifier->mDecoration->mType = type;
 }

@@ -1,6 +1,6 @@
 # Compiler
 
-This project is a test of flexc++/bisonc++ for a small programming language. [![Build Status](https://travis-ci.org/gendx/compiler.png?branch=master)](https://travis-ci.org/gendx/compiler)
+This project is a test of flexc++/bisonc++ for a small programming language. [![Build Status](https://travis-ci.org/gendx/compiler.svg?branch=master)](https://travis-ci.org/gendx/compiler)
 
 
 ## Installation
