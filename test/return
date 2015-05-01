@@ -3,3 +3,11 @@ scope/bad2 1
 scope/bad3 1
 scope/good1 0
 
+syntax/class_good1 0
+syntax/function_good1 0
+syntax/nested_good1 0
+syntax/loop_good1 0
+syntax/if_good1 0
+syntax/if_bad1 255
+syntax/if_bad2 255
+

@@ -19,21 +19,18 @@
 #ifndef CLASSVISITOR_HPP
 #define CLASSVISITOR_HPP
 
-#include "scopevisitor.hpp"
+#include "errorvisitor.hpp"
 #include "../ast.hpp"
-#include "../error/error.hpp"
 
-class ClassVisitor : public ScopeVisitor
+class ClassVisitor : public ErrorVisitor
 {
 public:
-    static bool visit(AST& ast, std::ostream& err);
+    static int visit(AST& ast, std::ostream& err);
 
     void visit(Class& s);
 
 private:
     ClassVisitor() = default;
-
-    std::vector<std::unique_ptr<error::Error> > mErrors;
 };
 
 #endif // CLASSVISITOR_HPP

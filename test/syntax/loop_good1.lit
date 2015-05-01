@@ -1,0 +1,13 @@
+class uint
+    pass
+
+forever
+    pass
+
+while false
+    pass
+
+x : uint := 0
+for i : uint in 0 .. 9
+    x += i
+

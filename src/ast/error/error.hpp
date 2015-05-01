@@ -29,7 +29,27 @@ class Error
 public:
     virtual ~Error() = default;
     virtual std::ostream& print(std::ostream& out) = 0;
+
+    inline int code() const;
+
+protected:
+    enum Code {
+        CodeAlreadyDeclared = 1,
+        CodeExpectedType = 2,
+        CodeAlreadyQualifiedType = 3,
+        CodeEmptyTypeQualification = 4
+    };
+
+    inline Error(Code code);
+
+    Code mCode;
 };
+
+inline Error::Error(Code code) :
+    mCode(code) {}
+inline int Error::code() const
+    {return mCode;}
+
 
 /** AlreadyDeclared **/
 class AlreadyDeclared : public Error
@@ -45,7 +65,7 @@ private:
 };
 
 inline AlreadyDeclared::AlreadyDeclared(const Token& error, const Token& first) :
-    mError(error), mFirst(first) {}
+    Error(CodeAlreadyDeclared), mError(error), mFirst(first) {}
 
 
 /** ExpectedType **/
@@ -61,7 +81,7 @@ private:
 };
 
 inline ExpectedType::ExpectedType(const Token& error) :
-    mError(error) {}
+    Error(CodeExpectedType), mError(error) {}
 
 
 /** AlreadyQualifiedType **/
@@ -78,7 +98,7 @@ private:
 };
 
 inline AlreadyQualifiedType::AlreadyQualifiedType(const Token& type, const Token& extraQualification) :
-    mType(type), mExtraQualification(extraQualification) {}
+    Error(CodeAlreadyQualifiedType), mType(type), mExtraQualification(extraQualification) {}
 
 
 /** EmptyTypeQualification **/
@@ -94,7 +114,7 @@ private:
 };
 
 inline EmptyTypeQualification::EmptyTypeQualification(const Token& error) :
-    mError(error) {}
+    Error(CodeEmptyTypeQualification), mError(error) {}
 
 }
 

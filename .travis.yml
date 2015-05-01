@@ -29,4 +29,4 @@ script:
   - cmake ..
   - make
   - cd ../test
-  - make test
+  - make -k test

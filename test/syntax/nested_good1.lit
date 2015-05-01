@@ -1,0 +1,6 @@
+class A
+    def f(x : A) : A
+        class B
+            def g(y : B) : A
+                return x
+        return x

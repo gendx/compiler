@@ -24,7 +24,7 @@
 class SymbolResolver
 {
 public:
-    static bool resolve(AST& ast, std::ostream& err);
+    static int resolve(AST& ast, std::ostream& err);
 };
 
 #endif // SYMBOLRESOLVER_HPP

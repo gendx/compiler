@@ -18,13 +18,11 @@
 
 #include "functionvisitor.hpp"
 
-bool FunctionVisitor::visit(AST& ast, std::ostream& err)
+int FunctionVisitor::visit(AST& ast, std::ostream& err)
 {
     FunctionVisitor v;
     ast.visit(v);
-    for (auto&& e : v.mErrors)
-        e->print(err);
-    return v.mErrors.empty();
+    return v.printErrors(err);
 }
 
 

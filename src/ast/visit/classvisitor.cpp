@@ -18,13 +18,11 @@
 
 #include "classvisitor.hpp"
 
-bool ClassVisitor::visit(AST& ast, std::ostream& err)
+int ClassVisitor::visit(AST& ast, std::ostream& err)
 {
     ClassVisitor v;
     ast.visit(v);
-    for (auto&& e : v.mErrors)
-        e->print(err);
-    return v.mErrors.empty();
+    return v.printErrors(err);
 }
 
 

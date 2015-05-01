@@ -28,10 +28,12 @@ int main()
     AST ast = parser.ast();
 
     if (ast.printErrors(std::cerr))
-        return 1;
+        return -1;
 
-    if (!SymbolResolver::resolve(ast, std::cerr))
-        return 1;
+    int code = SymbolResolver::resolve(ast, std::cerr);
+    if (code)
+        return code;
+
     PrintVisitor::print(std::cerr, ast);
     PrintCode::print(std::cout, ast, true);
 }

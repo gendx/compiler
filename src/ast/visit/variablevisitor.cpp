@@ -18,13 +18,11 @@
 
 #include "variablevisitor.hpp"
 
-bool VariableVisitor::visit(AST& ast, std::ostream& err)
+int VariableVisitor::visit(AST& ast, std::ostream& err)
 {
     VariableVisitor v;
     ast.visit(v);
-    for (auto&& e : v.mErrors)
-        e->print(err);
-    return v.mErrors.empty();
+    return v.printErrors(err);
 }
 
 

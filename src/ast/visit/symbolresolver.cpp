@@ -23,7 +23,16 @@
 #include "functionvisitor.hpp"
 #include "variablevisitor.hpp"
 
-bool SymbolResolver::resolve(AST& ast, std::ostream& err)
+int SymbolResolver::resolve(AST& ast, std::ostream& err)
 {
-    return ClassVisitor::visit(ast, err) && TypeVisitor::visit(ast, err) && FunctionVisitor::visit(ast, err) && VariableVisitor::visit(ast, err);
+    int code = 0;
+    if (code = ClassVisitor::visit(ast, err))
+        return code;
+    if (code = TypeVisitor::visit(ast, err))
+        return code;
+    if (code = FunctionVisitor::visit(ast, err))
+        return code;
+    if (code = VariableVisitor::visit(ast, err))
+        return code;
+    return code;
 }

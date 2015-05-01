@@ -1,0 +1,18 @@
+class A
+    pass
+class B
+    pass
+class C
+    pass
+
+def f(x : A, y : B) : C
+    z : C
+    return z
+
+def g(t : A) : A
+    return t
+
+def h() : A
+    u : A
+    return u
+

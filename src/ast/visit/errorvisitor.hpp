@@ -16,21 +16,19 @@
     along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.txt
 */
 
-#ifndef FUNCTIONVISITOR_HPP
-#define FUNCTIONVISITOR_HPP
+#ifndef ERRORVISITOR_HPP
+#define ERRORVISITOR_HPP
 
-#include "errorvisitor.hpp"
-#include "../ast.hpp"
+#include "scopevisitor.hpp"
+#include "../error/error.hpp"
 
-class FunctionVisitor : public ErrorVisitor
+class ErrorVisitor : public ScopeVisitor
 {
 public:
-    static int visit(AST& ast, std::ostream& err);
+    int printErrors(std::ostream& err) const;
 
-    void visit(Function& s);
-
-private:
-    FunctionVisitor() = default;
+protected:
+    std::vector<std::unique_ptr<error::Error> > mErrors;
 };
 
-#endif // FUNCTIONVISITOR_HPP
+#endif // ERRORVISITOR_HPP

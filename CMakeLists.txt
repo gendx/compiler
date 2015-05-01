@@ -18,6 +18,7 @@ ADD_EXECUTABLE(
     src/ast/type.cpp
     src/ast/visit/classvisitor.cpp
     src/ast/visit/emptyvisitor.cpp
+    src/ast/visit/errorvisitor.cpp
     src/ast/visit/functionvisitor.cpp
     src/ast/visit/printcode.cpp
     src/ast/visit/printvisitor.cpp

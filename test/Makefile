@@ -5,11 +5,13 @@ SRC := $(shell find . -name '*.lit')
 TST := $(SRC:.lit=.test)
 
 %.test: %.lit
-	@$(COMPILER) < $< > /dev/null 2>&1 ; \
-	    if [ "$$?" == `cat $(RETURN) | grep $* | cut -d' ' -f2 -` ] ; then \
+	@$(eval RET=$(shell $(COMPILER) < $< > /dev/null 2>&1 ; echo $$?) ) \
+	 $(eval EXPECT=`cat $(RETURN) | grep $* | cut -d' ' -f2 -`) \
+	    if [ $(RET) == $(EXPECT) ] ; then \
 	       echo [OK] $< ; \
 	    else \
 	       echo [FAIL] $< ; \
+	       echo Expected exit code $(EXPECT) but got $(RET) ; \
 	       exit 1 ; \
 	    fi ; \
 

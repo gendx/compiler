@@ -19,21 +19,18 @@
 #ifndef VARIABLEVISITOR_HPP
 #define VARIABLEVISITOR_HPP
 
-#include "scopevisitor.hpp"
+#include "errorvisitor.hpp"
 #include "../ast.hpp"
-#include "../error/error.hpp"
 
-class VariableVisitor : public ScopeVisitor
+class VariableVisitor : public ErrorVisitor
 {
 public:
-    static bool visit(AST& ast, std::ostream& err);
+    static int visit(AST& ast, std::ostream& err);
 
     void visit(Identify& e);
 
 private:
     VariableVisitor() = default;
-
-    std::vector<std::unique_ptr<error::Error> > mErrors;
 };
 
 #endif // VARIABLEVISITOR_HPP

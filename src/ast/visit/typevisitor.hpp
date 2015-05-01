@@ -19,22 +19,19 @@
 #ifndef TYPEVISITOR_HPP
 #define TYPEVISITOR_HPP
 
-#include "scopevisitor.hpp"
+#include "errorvisitor.hpp"
 #include "../ast.hpp"
-#include "../error/error.hpp"
 
-class TypeVisitor : public ScopeVisitor
+class TypeVisitor : public ErrorVisitor
 {
 public:
-    static bool visit(AST& ast, std::ostream& err);
+    static int visit(AST& ast, std::ostream& err);
 
     void visit(Identifier& e);
     void visit(Index& e);
 
 private:
     TypeVisitor() = default;
-
-    std::vector<std::unique_ptr<error::Error> > mErrors;
 };
 
 #endif // TYPEVISITOR_HPP
