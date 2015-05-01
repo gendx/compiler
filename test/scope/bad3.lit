@@ -1,0 +1,6 @@
+class A
+    pass
+
+def f(x : A, x : A) : A
+    pass
+
