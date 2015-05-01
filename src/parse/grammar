@@ -40,7 +40,7 @@
     MATCH: std::shared_ptr<Match>;
     TOK: Token;
 
-%type <EXP> expr lexical_error number char string
+%type <EXP> expr lexical_error boolean number char string
 %type <EXPLIST> anylist list
 %type <PARAMETERS> parameters paramlist
 %type <IDENT> identifier
@@ -54,7 +54,7 @@
 %type <MATCH> withstmts
 
 // lowest precedence first, highest precedence last
-%token <TOK> IDENTIFIER NUMBER CHAR STRING
+%token <TOK> IDENTIFIER BOOLEAN NUMBER CHAR STRING
 %token <TOK> EOL INDENT DEDENT
 %token <TOK> ERR_INDENT
 %token <TOK> ERR_CHAR ERR_STRING UNKNOWN_CHAR
@@ -297,6 +297,9 @@ expr:
 |   identifier {
         $$ = $1;
     }
+|   boolean {
+        $$ = $1;
+    }
 |   number {
         $$ = $1;
     }
@@ -385,6 +388,11 @@ lexical_error:
 identifier:
     IDENTIFIER {
         $$ = std::make_shared<Identifier>($1);
+    }
+;
+boolean:
+    BOOLEAN {
+        $$ = std::make_shared<DataBoolean>($1);
     }
 ;
 number:

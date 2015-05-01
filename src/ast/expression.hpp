@@ -120,6 +120,15 @@ public:
     void accept(Visitor& v);
 };
 
+class DataBoolean : public Data
+{
+public:
+    inline DataBoolean(const Token& value) :
+        Data(value) {}
+
+    void accept(Visitor& v);
+};
+
 
 /** Identify **/
 class Identify : public Expression, public std::enable_shared_from_this<Identify>

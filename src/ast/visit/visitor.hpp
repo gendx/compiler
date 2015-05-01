@@ -34,6 +34,7 @@ public:
     virtual void visit(DataString& e) = 0;
     virtual void visit(DataChar& e) = 0;
     virtual void visit(DataNumber& e) = 0;
+    virtual void visit(DataBoolean& e) = 0;
     virtual void visit(Identify& e) = 0;
     virtual void visit(Parameters& e) = 0;
     virtual void visit(Call& e) = 0;

@@ -185,6 +185,10 @@ void DataNumber::accept(Visitor& v)
 {
     v.visit(*this);
 }
+void DataBoolean::accept(Visitor& v)
+{
+    v.visit(*this);
+}
 void Identify::accept(Visitor& v)
 {
     v.visit(*this);

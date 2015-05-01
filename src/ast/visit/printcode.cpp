@@ -110,6 +110,11 @@ void PrintCode::visit(DataNumber& e)
     out << ")";
 }
 
+void PrintCode::visit(DataBoolean& e)
+{
+    out << e.token();
+}
+
 void PrintCode::visit(Identify& e)
 {
     e.mIdentifier->accept(*this);

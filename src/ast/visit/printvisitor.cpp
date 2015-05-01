@@ -101,6 +101,11 @@ void PrintVisitor::visit(DataNumber& e)
     out << ")";
 }
 
+void PrintVisitor::visit(DataBoolean& e)
+{
+    out << e.token();
+}
+
 void PrintVisitor::visit(Identify& e)
 {
     out << "(";

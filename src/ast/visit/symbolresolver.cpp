@@ -26,13 +26,13 @@
 int SymbolResolver::resolve(AST& ast, std::ostream& err)
 {
     int code = 0;
-    if (code = ClassVisitor::visit(ast, err))
+    if ((code = ClassVisitor::visit(ast, err)))
         return code;
-    if (code = TypeVisitor::visit(ast, err))
+    if ((code = TypeVisitor::visit(ast, err)))
         return code;
-    if (code = FunctionVisitor::visit(ast, err))
+    if ((code = FunctionVisitor::visit(ast, err)))
         return code;
-    if (code = VariableVisitor::visit(ast, err))
+    if ((code = VariableVisitor::visit(ast, err)))
         return code;
     return code;
 }

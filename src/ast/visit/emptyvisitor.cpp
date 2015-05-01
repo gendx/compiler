@@ -39,6 +39,9 @@ void EmptyVisitor::visit(DataChar&)
 void EmptyVisitor::visit(DataNumber&)
 {
 }
+void EmptyVisitor::visit(DataBoolean&)
+{
+}
 void EmptyVisitor::visit(Identify&)
 {
 }

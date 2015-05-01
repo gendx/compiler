@@ -34,6 +34,7 @@ public:
     void visit(DataString& e);
     void visit(DataChar& e);
     void visit(DataNumber& e);
+    void visit(DataBoolean& e);
     void visit(Identify& e);
     void visit(Parameters& e);
     void visit(Call& e);

@@ -97,6 +97,11 @@ default {
 
 
 // ******************** Basic data ********************
+true                                |
+false {
+    *d_val = makeToken();
+    return Parser::BOOLEAN; }
+
 [A-Za-z_][A-Za-z0-9_]* {
     *d_val = makeToken();
     return Parser::IDENTIFIER; }
