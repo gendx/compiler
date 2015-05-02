@@ -11,3 +11,26 @@ syntax/if_good1 0
 syntax/if_bad1 255
 syntax/if_bad2 255
 
+syntax/reserved/class 255
+syntax/reserved/concept 255
+syntax/reserved/def 255
+syntax/reserved/return 255
+syntax/reserved/break 255
+syntax/reserved/continue 255
+syntax/reserved/pass 255
+syntax/reserved/forever 255
+syntax/reserved/while 255
+syntax/reserved/for 255
+syntax/reserved/in 255
+syntax/reserved/if 255
+syntax/reserved/elif 255
+syntax/reserved/else 255
+syntax/reserved/switch 255
+syntax/reserved/case 255
+syntax/reserved/match 255
+syntax/reserved/with 255
+syntax/reserved/as 255
+syntax/reserved/default 255
+syntax/reserved/true 255
+syntax/reserved/false 255
+
