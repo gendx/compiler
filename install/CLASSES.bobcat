@@ -2,7 +2,6 @@ a2x
 align
 arg
 datetime
-errno
 exception
 fswap
 gs

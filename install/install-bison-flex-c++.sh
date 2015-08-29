@@ -4,17 +4,17 @@ git clone https://github.com/fbb-git/bobcat bobcat/
 git clone https://github.com/fbb-git/flexcpp flexcpp/
 git clone https://github.com/fbb-git/bisoncpp bisoncpp/
 
-cd bobcat
-git apply ../patches/bobcat.patch
-cd ..
+#cd bobcat
+#git apply ../patches/bobcat.patch
+#cd ..
 
-cd flexcpp
-git apply ../patches/flexcpp.patch
-cd ..
+#cd flexcpp
+#git apply ../patches/flexcpp.patch
+#cd ..
 
-cd bisoncpp
-git apply ../patches/bisoncpp.patch
-cd ..
+#cd bisoncpp
+#git apply ../patches/bisoncpp.patch
+#cd ..
 
 
 cd icmake/icmake
