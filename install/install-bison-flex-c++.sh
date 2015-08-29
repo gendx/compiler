@@ -8,9 +8,9 @@ git clone https://github.com/fbb-git/bisoncpp bisoncpp/
 #git apply ../patches/bobcat.patch
 #cd ..
 
-#cd flexcpp
-#git apply ../patches/flexcpp.patch
-#cd ..
+cd flexcpp
+git apply ../patches/flexcpp.patch
+cd ..
 
 #cd bisoncpp
 #git apply ../patches/bisoncpp.patch

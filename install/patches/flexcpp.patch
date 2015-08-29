@@ -1,8 +1,8 @@
 diff --git a/flexc++/scanner/scanner.h b/flexc++/scanner/scanner.h
-index 4e12649..079de4a 100644
+index 6661901..18c9d59 100644
 --- a/flexc++/scanner/scanner.h
 +++ b/flexc++/scanner/scanner.h
-@@ -82,8 +82,12 @@ class Scanner: public ScannerBase, private FlexTypes
+@@ -86,8 +86,12 @@ class Scanner: public ScannerBase, private FlexTypes
          using ScannerBase::push;
  
          void push(StartCondition__ sc); // push and revert to sc
@@ -17,16 +17,3 @@ index 4e12649..079de4a 100644
  
              // the start-condition stack can only be used from push and popSC
          class SCStack: private std::stack<StartCondition__> 
-diff --git a/flexc++/startconditions/startconditions.h b/flexc++/startconditions/startconditions.h
-index bf7b5ed..590cee5 100644
---- a/flexc++/startconditions/startconditions.h
-+++ b/flexc++/startconditions/startconditions.h
-@@ -19,7 +19,7 @@ struct StartConditions
- 
-     class StartCondition
-     {
--        friend class StartConditions;
-+        friend struct StartConditions;
-         friend std::ostream &operator<<(std::ostream &out, 
-                                     StartConditions const &startConditions);
- 
