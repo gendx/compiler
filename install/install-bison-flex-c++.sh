@@ -1,8 +1,8 @@
 #!/bin/sh
-git clone http://git.code.sf.net/p/icmake/code icmake/
-git clone http://git.code.sf.net/p/bobcat/code bobcat/
-git clone http://git.code.sf.net/p/flexcpp/code flexcpp/
-git clone http://git.code.sf.net/p/bisoncpp/code bisoncpp/
+git clone https://github.com/fbb-git/icmake icmake/
+git clone https://github.com/fbb-git/bobcat bobcat/
+git clone https://github.com/fbb-git/flexcpp flexcpp/
+git clone https://github.com/fbb-git/bisoncpp bisoncpp/
 
 cd bobcat
 git apply ../patches/bobcat.patch
