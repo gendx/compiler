@@ -8,10 +8,6 @@ cd flexcpp
 git apply ../patches/flexcpp.patch
 cd ..
 
-cd bisoncpp
-git apply ../patches/bisoncpp.patch
-cd ..
-
 
 cd icmake/icmake
 ./icm_bootstrap /
