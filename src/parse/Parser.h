@@ -41,7 +41,7 @@ class Parser: public ParserBase
         explicit Parser(std::istream &in = std::cin, std::ostream &out = std::cout);
     
         int parse();
-        AST ast();
+        const AST& ast() const;
 
     private:
         void error(char const *msg);    // called on (syntax) errors
@@ -63,7 +63,7 @@ class Parser: public ParserBase
 };
 
 
-inline AST Parser::ast()
+inline const AST& Parser::ast() const
 {
     return mAst;
 }
