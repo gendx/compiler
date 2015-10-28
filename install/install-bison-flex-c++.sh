@@ -1,4 +1,8 @@
 #!/bin/sh
+whereis realpath
+apt-get install coreutils
+whereis realpath
+
 git clone https://github.com/fbb-git/icmake icmake/
 git clone https://github.com/fbb-git/bobcat bobcat/
 git clone https://github.com/fbb-git/flexcpp flexcpp/
