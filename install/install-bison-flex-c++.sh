@@ -17,19 +17,20 @@ cd ../..
 cp -f CLASSES.bobcat bobcat/bobcat/CLASSES
 cd bobcat/bobcat
 echo "\n\n\n\n" | ./build libraries strip
-./build install
+./build install LOG:~/.bobcat
+cat ~/.bobcat
 cd ../..
 
 cd flexcpp/flexc++
 ./build program strip
-./build install program
-./build install skel
+./build install LOG:~/.flexcpp bs
+cat ~/.flexcpp
 cd ../..
 
 cd bisoncpp/bisonc++
 ./build program strip
-./build install program
-./build install skel
+./build install LOG:~/.bisoncpp bs
+cat ~/.bisoncpp
 cd ../..
 
 rm -Rf icmake bobcat flexcpp bisoncpp
