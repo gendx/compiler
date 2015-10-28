@@ -1,10 +1,4 @@
 #!/bin/sh
-whereis realpath
-whereis readlink
-apt-get install coreutils
-whereis realpath
-whereis readlink
-
 git clone https://github.com/fbb-git/icmake icmake/
 git clone https://github.com/fbb-git/bobcat bobcat/
 git clone https://github.com/fbb-git/flexcpp flexcpp/
