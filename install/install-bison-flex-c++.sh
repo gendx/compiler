@@ -17,7 +17,7 @@ cd ../..
 cp -f CLASSES.bobcat bobcat/bobcat/CLASSES
 cd bobcat/bobcat
 echo "\n\n\n\n" | ./build libraries strip
-./build install LOG:~/.bobcat
+./build install LOG:~/.bobcat hl
 cat ~/.bobcat
 cd ../..
 
