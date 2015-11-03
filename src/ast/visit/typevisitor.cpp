@@ -40,8 +40,7 @@ void TypeVisitor::visit(Index& e)
     {
         if (!type->parameters().empty())
         {
-            // TODO : use make_unique
-            mErrors.push_back(std::unique_ptr<error::Error>(new error::AlreadyQualifiedType(*e.mExpression, *e.mArgs)));
+            mErrors.push_back(std::make_unique<error::AlreadyQualifiedType>(*e.mExpression, *e.mArgs));
             return;
         }
 
@@ -51,15 +50,13 @@ void TypeVisitor::visit(Index& e)
         {
             std::shared_ptr<Type> argType = arg->getType();
             if (!argType)
-                // TODO : use make_unique
-                mErrors.push_back(std::unique_ptr<error::Error>(new error::ExpectedType(*arg)));
+                mErrors.push_back(std::make_unique<error::ExpectedType>(*arg));
             else
                 args.push_back(*argType);
         }
 
         if (args.empty())
-            // TODO : use make_unique
-            mErrors.push_back(std::unique_ptr<error::Error>(new error::EmptyTypeQualification(e)));
+            mErrors.push_back(std::make_unique<error::EmptyTypeQualification>(e));
 
         e.mDecoration = std::make_shared<DecorationType>(type->definition(), args);
     }

@@ -32,16 +32,14 @@ void VariableVisitor::visit(Identify& e)
     std::shared_ptr<DecorationIdentifier> d = this->scope().lookupLocal(name);
     if (d)
     {
-        // TODO : use make_unique
-        mErrors.push_back(std::unique_ptr<error::Error>(new error::AlreadyDeclared(*e.mIdentifier, d->token())));
+        mErrors.push_back(std::make_unique<error::AlreadyDeclared>(*e.mIdentifier, d->token()));
         return;
     }
 
     std::shared_ptr<Type> type = e.mType->getType();
     if (!type)
     {
-        // TODO : use make_unique
-        mErrors.push_back(std::unique_ptr<error::Error>(new error::ExpectedType(*e.mType)));
+        mErrors.push_back(std::make_unique<error::ExpectedType>(*e.mType));
         return;
     }
 

@@ -31,8 +31,7 @@ void ClassVisitor::visit(Class& s)
     const std::string& name = s.mName->mName->token();
     std::shared_ptr<DecorationIdentifier> d = this->scope().lookupLocal(name);
     if (d)
-        // TODO : use make_unique
-        mErrors.push_back(std::unique_ptr<error::Error>(new error::AlreadyDeclared(*s.mName, d->token())));
+        mErrors.push_back(std::make_unique<error::AlreadyDeclared>(*s.mName, d->token()));
     else
         s.mName->mName->mDecoration = this->scope().set(name, s.shared_from_this());
 

@@ -31,8 +31,7 @@ void FunctionVisitor::visit(Function& s)
     const std::string& name = s.mSignature->mIdentifier->token();
     std::shared_ptr<DecorationIdentifier> d = this->scope().lookupLocal(name);
     if (d && !d->isFunction())
-        // TODO : use make_unique
-        mErrors.push_back(std::unique_ptr<error::Error>(new error::AlreadyDeclared(*s.mSignature->mIdentifier, d->token())));
+        mErrors.push_back(std::make_unique<error::AlreadyDeclared>(*s.mSignature->mIdentifier, d->token()));
     else
         s.mSignature->mIdentifier->mDecoration = this->scope().set(name, s.shared_from_this());
 
