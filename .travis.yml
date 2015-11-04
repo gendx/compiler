@@ -11,6 +11,7 @@ before_install:
   - if [ "$CXX" == "clang++" ]; then chmod +x ./install-clang.sh; fi
   - if [ "$CXX" == "clang++" ]; then sudo -E ./install-clang.sh; fi
   - cd ..
+  - whereis "$CXX"
 
 install:
   - cd install
