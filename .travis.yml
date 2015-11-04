@@ -11,7 +11,6 @@ before_install:
   - if [ "$CXX" == "clang++" ]; then chmod +x ./install-clang.sh; fi
   - if [ "$CXX" == "clang++" ]; then sudo -E ./install-clang.sh; fi
   - cd ..
-  - whereis "$CXX"
 
 install:
   - cd install
@@ -20,6 +19,8 @@ install:
   - cd ..
   
 script:
+  - whereis "$CXX"
+  - $CXX --version
   - cd src/parse
   - flexc++ lexer
   - bisonc++ grammar
