@@ -20,6 +20,8 @@ install:
   
 script:
   - whereis "$CXX"
+  - ls -l /usr/bin | grep "$CXX"
+  - find / -name *$CXX* 2> /dev/null
   - $CXX --version
   - cd src/parse
   - flexc++ lexer
