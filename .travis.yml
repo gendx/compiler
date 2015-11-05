@@ -21,6 +21,7 @@ install:
 script:
   - whereis "$CXX"
   - which "$CXX"
+  - echo "$PATH"
   - ls -l /usr/bin | grep "$CXX"
   - $CXX --version
   - cd src/parse
