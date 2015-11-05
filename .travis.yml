@@ -10,6 +10,7 @@ before_install:
   - if [ "$CXX" == "g++" ]; then sudo -E ./install-gcc.sh; fi
   - if [ "$CXX" == "clang++" ]; then chmod +x ./install-clang.sh; fi
   - if [ "$CXX" == "clang++" ]; then sudo -E ./install-clang.sh; fi
+  - if [ "$CXX" == "clang++" ]; then export CXX="clang++-3.5"; export CC="clang-3.5"; fi
   - cd ..
 
 install:
@@ -19,7 +20,6 @@ install:
   - cd ..
   
 script:
-  - PATH=/usr/bin:$PATH
   - whereis "$CXX"
   - which "$CXX"
   - echo "$PATH"
